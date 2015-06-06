@@ -1,0 +1,23 @@
+{
+  "name": "applicants-chart",
+  "version": "0.0.0",
+  "description": "This chart makes it easier to look at a large pool of applicants.",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Swizec Teller",
+  "license": "closed-source",
+  "devDependencies": {
+    "babel-core": "^5.5.4",
+    "babel-loader": "^5.1.4",
+    "d3": "^3.5.5",
+    "node-libs-browser": "^0.5.2",
+    "react": "^0.13.3",
+    "react-hot-loader": "^1.2.7",
+    "react-tools": "^0.13.3",
+    "webpack": "^1.9.10",
+    "webpack-dev-server": "^1.9.0"
+  }
+}
