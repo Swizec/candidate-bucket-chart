@@ -1,0 +1,42 @@
+[
+  {
+    "JobId": 11,
+    "JobTitle": "Marketing Director for Serco",
+    "Responses": [
+      {
+        "Candidate": {
+          "Nid": 1001,
+          "Name": "John Doe",
+          "Gender": "Male",
+          "Date of Birth": "02/06/1977",
+          "Email": "john.doe@gmail.com",
+          "Country": "UAE",
+          "Location": "Dubai",
+          "EducationLevel": "Bachelor's Degree",
+          "CurrentJobTitle": "Undergraduate University Student",
+          "Source": "LinkedIn"
+        },
+        "OverallScore": 95,
+        "StarRating": 9,
+        "Thumbs": "Up"
+      },
+      {
+        "Candidate": {
+          "Nid": 1002,
+          "Name": "Mary Atkins",
+          "Gender": "Female",
+          "Date of Birth": "04/12/1981",
+          "Email": "mary.atkins@gmail.com",
+          "Country": "UAE",
+          "Location": "Dubai",
+          "EducationLevel": "Foundation Degree",
+          "CurrentJobTitle": "Marketing Director",
+          "Source": "New Candidate"
+        },
+        "OverallScore": 40,
+        "StarRating": 8,
+        "Thumbs": "Down"
+      }
+    ]
+  }
+]
