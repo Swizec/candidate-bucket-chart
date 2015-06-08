@@ -32,7 +32,7 @@ const ApplicantsChart = React.createClass({
 
     getDefaultProps: function () {
         return {
-            width: 800,
+            width: 600,
             height: 300
         };
     },
