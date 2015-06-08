@@ -3,6 +3,8 @@ const React = require('react'),
       PureRenderMixin = require('react/addons').addons.PureRenderMixin,
       d3 = require('d3');
 
+const BubbleChart = require('./BubbleChart');
+
 const Error = React.createClass({
     render: function () {
         return (
@@ -40,7 +42,7 @@ const ApplicantsChart = React.createClass({
             if (error) {
                 this.setState({error: new URIError(error.responseText)});
             }else{
-                this.setState({data: data});
+                this.setState({data: data[0]});
             }
         }.bind(this));
     },
@@ -49,7 +51,7 @@ const ApplicantsChart = React.createClass({
         if (this.state.error) {
             return (<Error error={this.state.error} />);
         }else if (this.state.data) {
-            return (<Chart data={this.state.data} {... this.props} />);
+            return (<BubbleChart data={this.state.data} {... this.props} />);
         }else {
             return (<Loading />);
         }

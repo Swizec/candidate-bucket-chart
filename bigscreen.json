@@ -36,6 +36,74 @@
         "OverallScore": 40,
         "StarRating": 8,
         "Thumbs": "Down"
+      },
+      {
+        "Candidate": {
+          "Nid": 1003,
+          "Name": "John Doe",
+          "Gender": "Male",
+          "Date of Birth": "02/06/1987",
+          "Email": "john.doe@gmail.com",
+          "Country": "UAE",
+          "Location": "Dubai",
+          "EducationLevel": "Bachelor's Degree",
+          "CurrentJobTitle": "Undergraduate University Student",
+          "Source": "LinkedIn"
+        },
+        "OverallScore": 85,
+        "StarRating": 9,
+        "Thumbs": "Up"
+      },
+      {
+        "Candidate": {
+          "Nid": 1004,
+          "Name": "Mary Atkins",
+          "Gender": "Female",
+          "Date of Birth": "04/12/1979",
+          "Email": "mary.atkins@gmail.com",
+          "Country": "UAE",
+          "Location": "Dubai",
+          "EducationLevel": "Foundation Degree",
+          "CurrentJobTitle": "Marketing Director",
+          "Source": "New Candidate"
+        },
+        "OverallScore": 30,
+        "StarRating": 7,
+        "Thumbs": "Down"
+      },
+      {
+        "Candidate": {
+          "Nid": 1005,
+          "Name": "John Doe",
+          "Gender": "Male",
+          "Date of Birth": "02/03/1987",
+          "Email": "john.doe@gmail.com",
+          "Country": "UAE",
+          "Location": "Dubai",
+          "EducationLevel": "Bachelor's Degree",
+          "CurrentJobTitle": "Undergraduate University Student",
+          "Source": "LinkedIn"
+        },
+        "OverallScore": 89,
+        "StarRating": 9,
+        "Thumbs": "Up"
+      },
+      {
+        "Candidate": {
+          "Nid": 1006,
+          "Name": "Mary Atkins",
+          "Gender": "Female",
+          "Date of Birth": "04/10/1979",
+          "Email": "mary.atkins@gmail.com",
+          "Country": "UAE",
+          "Location": "Dubai",
+          "EducationLevel": "Foundation Degree",
+          "CurrentJobTitle": "Marketing Director",
+          "Source": "New Candidate"
+        },
+        "OverallScore": 79,
+        "StarRating": 8,
+        "Thumbs": "Down"
       }
     ]
   }
