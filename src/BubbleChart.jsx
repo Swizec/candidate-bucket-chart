@@ -60,12 +60,16 @@ var BubbleChart = React.createClass({
 
     render: function () {
         return (
-            <svg width={this.props.width} height={this.props.height}>
+            <svg width={this.props.width} height={this.props.height} >
                 {this.props.data.Responses.map(function (d) {
                     return (
                         <Candidate x={this.xScale(this.props.x_value(d))}
                                    y={this.yScale(this.props.y_value(d))}
-                                   key={"candidate-"+d.Candidate.Nid} />
+                                   r="6"
+                                   key={"candidate-"+d.Candidate.Nid}
+                                   data={d}
+                                   maxWidth={this.props.width}
+                                   maxHeight={this.props.height} />
                     );
                  }.bind(this))}
             </svg>
