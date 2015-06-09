@@ -50,8 +50,8 @@ var BubbleChart = React.createClass({
                 d3.max(props.data.Responses.map(props.y_value))
             ])
             .range([
-                props.margin.top,
-                props.height-this.props.margin.bottom
+                props.height-this.props.margin.bottom,
+                props.margin.top
             ]);
 
         this.xScale
@@ -106,13 +106,13 @@ var BubbleChart = React.createClass({
                       updatePass={this.updatePass} />
 
             <text textAnchor="center"
-                  transform={"rotate(90) translate("+(lineY+(this.props.height-lineY)/2)+", "+(-this.props.width+10)+")"}>
-                {Npassed}
+                  transform={"rotate(90) translate("+(lineY/2)+", "+(-this.props.width+10)+")"}>
+                {Npassed+" pass"}
             </text>
 
             <text textAnchor="center"
-                  transform={"rotate(90) translate("+(lineY/2)+", "+(-this.props.width+10)+")"}>
-                {Nfail}
+                  transform={"rotate(90) translate("+(lineY+(this.props.height-lineY)/2)+", "+(-this.props.width+10)+")"}>
+                {Nfail+" don't"}
             </text>
 
             </svg>
