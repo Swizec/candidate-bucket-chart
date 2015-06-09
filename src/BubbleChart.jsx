@@ -26,6 +26,12 @@ var BubbleChart = React.createClass({
         };
     },
 
+    getInitialState: function () {
+        return {
+            passValue: 0
+        };
+    },
+
     componentWillMount: function () {
         this.yScale = d3.scale.linear();
         this.xScale = d3.scale.linear();
@@ -59,11 +65,24 @@ var BubbleChart = React.createClass({
             ]);
     },
 
+    updatePass: function (y) {
+        var value = d3.round(this.yScale.invert(y));
+
+        this.setState({passValue: value});
+    },
+
     render: function () {
+        var median = d3.median(this.props.data.Responses.map(this.props.y_value)),
+            initialY = this.yScale(median);
+
         return (
             <svg width={this.props.width} height={this.props.height} >
                 <PassLine minY={this.props.margin.top}
-                          maxY={this.props.height-this.props.margin.bottom} />
+                          maxY={this.props.height-this.props.margin.bottom}
+                          passValue={this.state.passValue || median}
+                          initialY={initialY}
+                          updatePass={this.updatePass} />
+
                 {this.props.data.Responses.map(function (d) {
                     return (
                         <Candidate x={this.xScale(this.props.x_value(d))}

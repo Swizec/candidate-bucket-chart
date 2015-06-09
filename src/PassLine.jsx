@@ -1,8 +1,11 @@
 
 const React = require('react'),
+      PureRenderMixin = require('react/addons').addons.PureRenderMixin,
       d3 = require('d3');
 
 var PassLine = React.createClass({
+    mixins: [PureRenderMixin],
+
     getInitialState: function () {
         return {
             isDragging: false,
@@ -12,11 +15,7 @@ var PassLine = React.createClass({
     },
 
     componentWillMount: function () {
-        this.setState({y: this.props.y || this.state.y});
-    },
-
-    componentWillReceiveProps: function (props) {
-        this.setState({y: props.y});
+        this.setState({y: this.props.initialY});
     },
 
     startDrag: function (event) {
@@ -33,9 +32,15 @@ var PassLine = React.createClass({
             return;
         }
 
+        var y = event.clientY;
+
         this.setState({
-            y: event.clientY
+            y: y
         });
+
+        if (this.props.updatePass) {
+            this.props.updatePass(y);
+        }
     },
 
     stopDrag: function () {
@@ -46,9 +51,6 @@ var PassLine = React.createClass({
     },
 
     render: function () {
-        var y = this.state.y-this.state.height/2,
-            transform = "translate(0, "+y+")";
-
         return (
             <g onMouseDown={this.startDrag}
                onMouseMove={this.drag}
