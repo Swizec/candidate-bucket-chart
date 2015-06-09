@@ -77,12 +77,6 @@ var BubbleChart = React.createClass({
 
         return (
             <svg width={this.props.width} height={this.props.height} >
-                <PassLine minY={this.props.margin.top}
-                          maxY={this.props.height-this.props.margin.bottom}
-                          passValue={this.state.passValue || median}
-                          initialY={initialY}
-                          updatePass={this.updatePass} />
-
                 {this.props.data.Responses.map(function (d) {
                     return (
                         <Candidate x={this.xScale(this.props.x_value(d))}
@@ -94,6 +88,13 @@ var BubbleChart = React.createClass({
                                    maxHeight={this.props.height} />
                     );
                  }.bind(this))}
+
+                        <PassLine minY={this.props.margin.top}
+                                  maxY={this.props.height-this.props.margin.bottom}
+                                  passValue={this.state.passValue || median}
+                                  initialY={initialY}
+                                  updatePass={this.updatePass} />
+
             </svg>
         );
     }

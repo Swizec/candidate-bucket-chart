@@ -54,21 +54,25 @@ var PassLine = React.createClass({
         return (
             <g onMouseDown={this.startDrag}
                onMouseMove={this.drag}
-               onMouseUp={this.stopDrag}>
-
-                <rect x="0"
-                      y={this.state.y-this.state.height/2}
-                      width="100%"
-                      height={this.state.height}
-                      style={{fill: "white"}} />
+            onMouseUp={this.stopDrag}
+            onMouseOut={this.stopDrag}
+               style={{cursor: "ns-resize"}}>
 
                 <line x1="0" y1={this.state.y-1}
                       x2="100%" y2={this.state.y-1}
                       style={{stroke: "black", strokeWidth: 1.5, opacity: .5}} />
 
-            <text x="100%" y={this.state.y-4} textAnchor="end" style={{userSelect: "none"}}>
-                {"Score: "+this.props.passValue}
-            </text>
+                <text x="100%" y={this.state.y-4} textAnchor="end"
+                      style={{userSelect: "none"}}>
+                    {"Score: "+this.props.passValue}
+                </text>
+
+                <rect x="0"
+                      y={this.state.y-this.state.height/2}
+                      width="100%"
+                      height={this.state.height}
+                      style={{fill: "rgba(0, 0, 0, 0)"}} />
+
             </g>
         );
     }
