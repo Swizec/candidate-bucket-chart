@@ -10,7 +10,7 @@ var PassLine = React.createClass({
         return {
             isDragging: false,
             y: 50,
-            height: 4
+            height: 10
         };
     },
 
@@ -46,7 +46,7 @@ var PassLine = React.createClass({
     stopDrag: function () {
         this.setState({
             isDragging: false,
-            height: 4
+            height: 10
         });
     },
 
@@ -65,6 +65,10 @@ var PassLine = React.createClass({
                 <line x1="0" y1={this.state.y-1}
                       x2="100%" y2={this.state.y-1}
                       style={{stroke: "black", strokeWidth: 1.5, opacity: .5}} />
+
+            <text x="100%" y={this.state.y-4} textAnchor="end" style={{userSelect: "none"}}>
+                {"Score: "+this.props.passValue}
+            </text>
             </g>
         );
     }
