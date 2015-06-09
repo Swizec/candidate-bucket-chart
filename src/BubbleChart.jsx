@@ -75,25 +75,45 @@ var BubbleChart = React.createClass({
         var median = d3.median(this.props.data.Responses.map(this.props.y_value)),
             initialY = this.yScale(median);
 
+        var Npassed = this.props.data.Responses.filter(function (d) {
+            return this.props.y_value(d) > (this.state.passValue || median);
+        }.bind(this)).length,
+            Nfail = this.props.data.Responses.length - Npassed;
+
+        var lineY = this.yScale(this.state.passValue || median);
+
         return (
             <svg width={this.props.width} height={this.props.height} >
-                {this.props.data.Responses.map(function (d) {
-                    return (
-                        <Candidate x={this.xScale(this.props.x_value(d))}
-                                   y={this.yScale(this.props.y_value(d))}
-                                   r="6"
-                                   key={"candidate-"+d.Candidate.Nid}
-                                   data={d}
-                                   maxWidth={this.props.width}
-                                   maxHeight={this.props.height} />
-                    );
-                 }.bind(this))}
+            {this.props.data.Responses.map(function (d) {
+                var passed = this.props.y_value(d) > (this.state.passValue || median);
 
-                        <PassLine minY={this.props.margin.top}
-                                  maxY={this.props.height-this.props.margin.bottom}
-                                  passValue={this.state.passValue || median}
-                                  initialY={initialY}
-                                  updatePass={this.updatePass} />
+                return (
+                    <Candidate x={this.xScale(this.props.x_value(d))}
+                               y={this.yScale(this.props.y_value(d))}
+                               r="6"
+                               key={"candidate-"+d.Candidate.Nid}
+                               data={d}
+                               maxWidth={this.props.width}
+                               maxHeight={this.props.height}
+                               passed={passed} />
+                );
+            }.bind(this))}
+
+            <PassLine minY={this.props.margin.top}
+                      maxY={this.props.height-this.props.margin.bottom}
+                      passValue={this.state.passValue || median}
+                      initialY={initialY}
+                      updatePass={this.updatePass} />
+
+            <text textAnchor="center"
+                  transform={"rotate(90) translate("+(lineY+(this.props.height-lineY)/2)+", "+(-this.props.width+10)+")"}>
+                {Npassed}
+            </text>
+
+            <text textAnchor="center"
+                  transform={"rotate(90) translate("+(lineY/2)+", "+(-this.props.width+10)+")"}>
+                {Nfail}
+            </text>
 
             </svg>
         );

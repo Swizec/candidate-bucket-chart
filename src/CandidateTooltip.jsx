@@ -61,7 +61,7 @@ var CandidateTooltip = React.createClass({
                 <div>
                     <img style={{width: 50, height: 50, float: "left", marginRight: 5}} />
                     <a href="#"><strong>{candidate.Name}</strong></a> <br />
-                    {candidate.CurrentJobTitle} <br />
+                    {this.props.data.OverallScore}, {candidate.CurrentJobTitle} <br />
                     {candidate.Location}
                 </div>
             </foreignobject>

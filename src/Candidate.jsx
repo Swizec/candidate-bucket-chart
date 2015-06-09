@@ -31,6 +31,10 @@ var Candidate = React.createClass({
     },
 
     render: function () {
+        var style = {
+            opacity: this.props.passed ? .8 : .4
+        };
+
         return (
             <g transform={"translate("+(this.props.x+this.state.x_offset)+", "+(this.props.y+this.state.y_offset)+")"}
                onMouseOver={this.show_tooltip}
@@ -38,6 +42,7 @@ var Candidate = React.createClass({
                 <circle cx={this.props.r/2-this.state.x_offset}
                         cy={this.props.r/2-this.state.y_offset}
                         r={this.props.r}
+                        style={style}
                         />
                 <CandidateTooltip
                         display={this.state.tooltip_shown ? "block" : "none"}
