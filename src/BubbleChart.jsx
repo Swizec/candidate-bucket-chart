@@ -1,8 +1,6 @@
 
 const React = require('react'),
-      d3 = require('d3'),
-      DragDropContext = require('react-dnd').DragDropContext,
-      HTML5Backend = require('react-dnd/modules/backends/HTML5');
+      d3 = require('d3');
 
 const Candidate = require('./Candidate'),
       PassLine = require('./PassLine');
@@ -64,6 +62,8 @@ var BubbleChart = React.createClass({
     render: function () {
         return (
             <svg width={this.props.width} height={this.props.height} >
+                <PassLine minY={this.props.margin.top}
+                          maxY={this.props.height-this.props.margin.bottom} />
                 {this.props.data.Responses.map(function (d) {
                     return (
                         <Candidate x={this.xScale(this.props.x_value(d))}
@@ -75,11 +75,9 @@ var BubbleChart = React.createClass({
                                    maxHeight={this.props.height} />
                     );
                  }.bind(this))}
-
-                        <PassLine />
             </svg>
         );
     }
 });
 
-module.exports = DragDropContext(HTML5Backend)(BubbleChart);
+module.exports = BubbleChart;
