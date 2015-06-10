@@ -21,6 +21,7 @@ var PassLine = React.createClass({
     startDrag: function (event) {
         this.setState({
             isDragging: true,
+            prev_y: event.clientY,
             height: this.props.maxY/2
         });
     },
@@ -32,10 +33,12 @@ var PassLine = React.createClass({
             return;
         }
 
-        var y = event.clientY;
+        var dy = event.clientY - this.state.prev_y,
+            y = this.state.y + dy;
 
         this.setState({
-            y: y
+            y: y,
+            prev_y: event.clientY
         });
 
         if (this.props.updatePass) {

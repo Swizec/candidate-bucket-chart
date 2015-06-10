@@ -52,8 +52,11 @@ const ApplicantsChart = React.createClass({
         if (this.state.error) {
             return (<Error error={this.state.error} />);
         }else if (this.state.data) {
+            var data = this.state.data;
+
             return (
                 <div className="applicants-chart">
+                    <h2>{data.JobTitle} <small>{data.Responses.length} candidates</small></h2>
                     <BubbleChart data={this.state.data} {... this.props} />
                 </div>
             );
