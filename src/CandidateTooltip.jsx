@@ -59,7 +59,8 @@ var CandidateTooltip = React.createClass({
                            height={this.props.height}
                            style={{display: this.props.display}}>
                 <div>
-                    <img style={{width: 50, height: 50, float: "left", marginRight: 5}} />
+                    <img src={candidate.Avatar}
+                         style={{width: 50, height: 50, float: "left", marginRight: 5}} />
                     <a href="#"><strong>{candidate.Name}</strong></a> <br />
                     {this.props.data.OverallScore}, {candidate.CurrentJobTitle} <br />
                     {candidate.Location}

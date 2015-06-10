@@ -37,7 +37,7 @@ var Candidate = React.createClass({
 
         return (
             <g transform={"translate("+(this.props.x+this.state.x_offset)+", "+(this.props.y+this.state.y_offset)+")"}
-               onMouseOver={this.show_tooltip}
+               onClick={this.show_tooltip}
                onMouseLeave={this.hide_tooltip}>
                 <circle cx={this.props.r/2-this.state.x_offset}
                         cy={this.props.r/2-this.state.y_offset}
