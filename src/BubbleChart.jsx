@@ -87,6 +87,13 @@ var BubbleChart = React.createClass({
         this.setState({passValue: value});
     },
 
+    updateUseTag: function (new_id) {
+        //var topmost = this.getDOMNode().getElementById("use");
+        //topmost.setAttributeNS("http://www.w3.org/1999/xlink",
+        //                       "xlink:href",
+        //                       "#" + new_id);
+    },
+
     render: function () {
         var median = d3.median(this.props.data.Responses.map(this.props.y_value)),
             initialY = this.yScale(median);
@@ -107,7 +114,8 @@ var BubbleChart = React.createClass({
                                data={d}
                                maxWidth={this.props.width}
                                maxHeight={this.props.height}
-                               passed={passed} />
+                               passed={passed}
+                               updateUseTag={this.updateUseTag} />
                 );
              }.bind(this))}
 
@@ -126,6 +134,8 @@ var BubbleChart = React.createClass({
                           lineY={lineY}
                           y_value={this.props.y_value}
                           passValue={passValue} />
+
+            <use id="use"></use>
 
             </svg>
         );

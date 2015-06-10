@@ -17,6 +17,7 @@ var Candidate = React.createClass({
     },
 
     show_tooltip: function () {
+        this.props.updateUseTag("candidate-"+this.props.data.Candidate.Nid);
         this.setState({tooltip_shown: true});
     },
 
@@ -41,7 +42,8 @@ var Candidate = React.createClass({
             <g transform={"translate("+(this.props.x+this.state.x_offset)+", "+(this.props.y+this.state.y_offset)+")"}
                onClick={this.show_tooltip}
                onMouseOut={this.hide_tooltip}
-               className={className}>
+            className={className}
+            id={"candidate-"+this.props.data.Candidate.Nid}>
                 <circle cx={this.props.r/2-this.state.x_offset}
                         cy={this.props.r/2-this.state.y_offset}
                         r={this.props.r}

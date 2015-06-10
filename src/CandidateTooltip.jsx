@@ -60,14 +60,14 @@ var CandidateTooltip = React.createClass({
                            y="0"
                            width={this.props.width}
                            height={this.props.height}
-                           style={{display: this.props.display}}>
+                           style={{display: this.props.display}}
+                           id={"tooltip-"+this.props.data.Candidate.Nid}>
                 <div>
                     <img src={candidate.Avatar} />
                     <a href="#"><strong>{candidate.Name}</strong></a> <br />
                     {candidate.CurrentJobTitle} <br />
-                    {candidate.Location}
-                    <br />
-                    <Stars score={this.props.data.StarRating} /> <strong>{this.props.data.OverallScore}</strong>
+                    {candidate.Location}<br />
+                    Score: <strong>{this.props.data.OverallScore}</strong>
                 </div>
             </foreignobject>
         );
