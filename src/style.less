@@ -4,6 +4,7 @@
 
         circle {
             stroke-width: 1;
+            cursor: pointer;
         }
 
         &.female circle {
@@ -16,7 +17,6 @@
             fill: #779ecb;
         }
 
-
         &.passed circle {
             stroke-opacity: 1;
             fill-opacity: .6;
@@ -25,6 +25,17 @@
         &.no-passed circle {
             stroke-opacity: .5;
             fill-opacity: .2;
+        }
+    }
+
+    .candidate-tooltip {
+        background: white;
+        padding: 10px;
+
+        img {
+            height: 70px;
+            float: left;
+            margin-right: 5px;
         }
     }
 

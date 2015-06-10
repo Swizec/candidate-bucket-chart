@@ -1,13 +1,16 @@
 
 const React = require('react'),
-      PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+      PureRenderMixin = require('react/addons').addons.PureRenderMixin,
+      _ = require('lodash');
+
+const Stars = require('./Stars');
 
 var CandidateTooltip = React.createClass({
     mixins: [PureRenderMixin],
 
     getDefaultProps: function () {
         return {
-            width: 200,
+            width: 300,
             height: 50,
         };
     },
@@ -52,18 +55,19 @@ var CandidateTooltip = React.createClass({
         var candidate = this.props.data.Candidate;
 
         return (
-            <foreignobject className="node"
+            <foreignobject className="candidate-tooltip"
                            x="0"
                            y="0"
                            width={this.props.width}
                            height={this.props.height}
                            style={{display: this.props.display}}>
                 <div>
-                    <img src={candidate.Avatar}
-                         style={{width: 50, height: 50, float: "left", marginRight: 5}} />
+                    <img src={candidate.Avatar} />
                     <a href="#"><strong>{candidate.Name}</strong></a> <br />
-                    {this.props.data.OverallScore}, {candidate.CurrentJobTitle} <br />
+                    {candidate.CurrentJobTitle} <br />
                     {candidate.Location}
+                    <br />
+                    <Stars score={this.props.data.StarRating} /> <strong>{this.props.data.OverallScore}</strong>
                 </div>
             </foreignobject>
         );
