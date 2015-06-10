@@ -17,6 +17,9 @@ var BubbleChart = React.createClass({
             x_value: function (d) {
                 return time_format.parse(d.Candidate["Date of Birth"]);
             },
+            r_value: function (d) {
+                return d.OverallScore;
+            },
             margin: {
                 top: 10,
                 bottom: 10,
@@ -35,6 +38,7 @@ var BubbleChart = React.createClass({
     componentWillMount: function () {
         this.yScale = d3.scale.linear();
         this.xScale = d3.scale.linear();
+        this.rScale = d3.scale.linear();
 
         this.update_d3(this.props);
     },
@@ -52,6 +56,16 @@ var BubbleChart = React.createClass({
             .range([
                 props.height-this.props.margin.bottom,
                 props.margin.top
+            ]);
+
+        this.rScale
+            .domain([
+                d3.min(props.data.Responses.map(props.r_value)),
+                d3.max(props.data.Responses.map(props.r_value))
+            ])
+            .range([
+                1,
+                this.props.max_r
             ]);
 
         this.xScale
@@ -90,7 +104,7 @@ var BubbleChart = React.createClass({
                 return (
                     <Candidate x={this.xScale(this.props.x_value(d))}
                                y={this.yScale(this.props.y_value(d))}
-                               r="6"
+                               r={this.rScale(this.props.r_value(d))}
                                key={"candidate-"+d.Candidate.Nid}
                                data={d}
                                maxWidth={this.props.width}

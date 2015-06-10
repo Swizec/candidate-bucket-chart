@@ -32,8 +32,9 @@ const ApplicantsChart = React.createClass({
 
     getDefaultProps: function () {
         return {
-            width: 600,
-            height: 300
+            width: 800,
+            height: 500,
+            max_r: 10
         };
     },
 
@@ -51,7 +52,11 @@ const ApplicantsChart = React.createClass({
         if (this.state.error) {
             return (<Error error={this.state.error} />);
         }else if (this.state.data) {
-            return (<BubbleChart data={this.state.data} {... this.props} />);
+            return (
+                <div className="applicants-chart">
+                    <BubbleChart data={this.state.data} {... this.props} />
+                </div>
+            );
         }else {
             return (<Loading />);
         }

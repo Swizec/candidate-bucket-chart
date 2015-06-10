@@ -1,0 +1,30 @@
+
+.applicants-chart {
+    .candidate {
+
+        circle {
+            stroke-width: 1;
+        }
+
+        &.female circle {
+            stroke: #dea4dd;
+            fill: #dea4dd;
+        }
+
+        &.male circle {
+            stroke: #779ecb;
+            fill: #779ecb;
+        }
+
+
+        &.passed circle {
+            stroke-opacity: 1;
+            fill-opacity: .6;
+        }
+
+        &.no-passed circle {
+            stroke-opacity: .6;
+            fill-opacity: .3;
+        }
+    }
+}

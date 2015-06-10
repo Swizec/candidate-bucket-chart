@@ -31,18 +31,20 @@ var Candidate = React.createClass({
     },
 
     render: function () {
-        var style = {
-            opacity: this.props.passed ? .8 : .4
-        };
+        var className = [
+            "candidate",
+            this.props.data.Candidate.Gender.toLowerCase(),
+            this.props.passed ? "passed" : "no-passed"
+        ].join(" ");
 
         return (
             <g transform={"translate("+(this.props.x+this.state.x_offset)+", "+(this.props.y+this.state.y_offset)+")"}
                onClick={this.show_tooltip}
-               onMouseLeave={this.hide_tooltip}>
+               onMouseLeave={this.hide_tooltip}
+               className={className}>
                 <circle cx={this.props.r/2-this.state.x_offset}
                         cy={this.props.r/2-this.state.y_offset}
                         r={this.props.r}
-                        style={style}
                         />
                 <CandidateTooltip
                         display={this.state.tooltip_shown ? "block" : "none"}

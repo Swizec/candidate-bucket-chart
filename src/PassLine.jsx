@@ -21,7 +21,7 @@ var PassLine = React.createClass({
     startDrag: function (event) {
         this.setState({
             isDragging: true,
-            height: 50
+            height: this.props.maxY/2
         });
     },
 
@@ -60,7 +60,7 @@ var PassLine = React.createClass({
 
                 <line x1="0" y1={this.state.y-1}
                       x2="100%" y2={this.state.y-1}
-                      style={{stroke: "black", strokeWidth: 1.5, opacity: .5}} />
+                      style={{stroke: "black", strokeWidth: 1.5, opacity: .8}} />
 
                 <text x="100%" y={this.state.y-4} textAnchor="end"
                       style={{userSelect: "none"}}>
