@@ -4,7 +4,8 @@ const React = require('react'),
 
 const Candidate = require('./Candidate'),
       PassLine = require('./PassLine'),
-      BucketCounts = require('./BucketCounts');
+      BucketCounts = require('./BucketCounts'),
+      Axis = require('./Axis');
 
 var BubbleChart = React.createClass({
 
@@ -75,7 +76,7 @@ var BubbleChart = React.createClass({
                 d3.max(props.data.Responses.map(props.x_value))
             ])
             .range([
-                props.margin.left,
+                props.margin.left+props.max_r,
                 props.width-props.margin.right-props.max_r
             ]);
     },
@@ -108,13 +109,16 @@ var BubbleChart = React.createClass({
                                maxHeight={this.props.height}
                                passed={passed} />
                 );
-            }.bind(this))}
+             }.bind(this))}
+
+            <Axis {...this.props} yScale={this.yScale}/>
 
             <PassLine minY={this.props.margin.top}
                       maxY={this.props.height-this.props.margin.bottom}
                       passValue={passValue}
                       initialY={initialY}
-                      updatePass={this.updatePass} />
+                      updatePass={this.updatePass}
+                      margin={this.props.margin} />
 
             <BucketCounts data={this.props.data}
                           width={this.props.width}

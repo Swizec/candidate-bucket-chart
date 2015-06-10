@@ -61,13 +61,17 @@ var PassLine = React.createClass({
                onMouseOut={this.stopDrag}
                style={{cursor: "ns-resize"}}>
 
-                <line x1="0" y1={this.state.y-1}
+                <line x1={this.props.margin.left} y1={this.state.y-1}
                       x2="100%" y2={this.state.y-1}
                       style={{stroke: "black", strokeWidth: 1.5, opacity: .8}} />
 
-                <text x="100%" y={this.state.y-4} textAnchor="end"
-                      style={{userSelect: "none"}}>
-                    {"Score: "+this.props.passValue}
+            <text x="100%" y={this.state.y-4} textAnchor="end"
+                  transform="translate(-22, 0)">
+                    Score:
+                </text>
+
+                <text x="100%" y={this.state.y-4} textAnchor="end" className="text-big">
+                    {this.props.passValue}
                 </text>
 
                 <rect x="0"
