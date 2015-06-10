@@ -3,7 +3,8 @@ const React = require('react'),
       d3 = require('d3');
 
 const Candidate = require('./Candidate'),
-      PassLine = require('./PassLine');
+      PassLine = require('./PassLine'),
+      BucketCounts = require('./BucketCounts');
 
 var BubbleChart = React.createClass({
 
@@ -23,8 +24,8 @@ var BubbleChart = React.createClass({
             margin: {
                 top: 10,
                 bottom: 10,
-                left: 50,
-                right: 20
+                left: 20,
+                right: 65
             }
         };
     },
@@ -75,7 +76,7 @@ var BubbleChart = React.createClass({
             ])
             .range([
                 props.margin.left,
-                props.width-props.margin.right
+                props.width-props.margin.right-props.max_r
             ]);
     },
 
@@ -89,12 +90,8 @@ var BubbleChart = React.createClass({
         var median = d3.median(this.props.data.Responses.map(this.props.y_value)),
             initialY = this.yScale(median);
 
-        var Npassed = this.props.data.Responses.filter(function (d) {
-            return this.props.y_value(d) > (this.state.passValue || median);
-        }.bind(this)).length,
-            Nfail = this.props.data.Responses.length - Npassed;
-
-        var lineY = this.yScale(this.state.passValue || median);
+        var passValue = this.state.passValue || median,
+            lineY = this.yScale(passValue);
 
         return (
             <svg width={this.props.width} height={this.props.height} >
@@ -115,19 +112,16 @@ var BubbleChart = React.createClass({
 
             <PassLine minY={this.props.margin.top}
                       maxY={this.props.height-this.props.margin.bottom}
-                      passValue={this.state.passValue || median}
+                      passValue={passValue}
                       initialY={initialY}
                       updatePass={this.updatePass} />
 
-            <text textAnchor="center"
-                  transform={"rotate(90) translate("+(lineY/2)+", "+(-this.props.width+10)+")"}>
-                {Npassed+" pass"}
-            </text>
-
-            <text textAnchor="center"
-                  transform={"rotate(90) translate("+(lineY+(this.props.height-lineY)/2)+", "+(-this.props.width+10)+")"}>
-                {Nfail+" don't"}
-            </text>
+            <BucketCounts data={this.props.data}
+                          width={this.props.width}
+                          height={this.props.height}
+                          lineY={lineY}
+                          y_value={this.props.y_value}
+                          passValue={passValue} />
 
             </svg>
         );
