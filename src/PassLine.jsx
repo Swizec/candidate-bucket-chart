@@ -59,7 +59,8 @@ var PassLine = React.createClass({
                onMouseMove={this.drag}
                onMouseUp={this.stopDrag}
                onMouseOut={this.stopDrag}
-               style={{cursor: "ns-resize"}}>
+               style={{cursor: "ns-resize"}}
+               className="pass-line">
 
                 <line x1={this.props.margin.left} y1={this.state.y-1}
                       x2="100%" y2={this.state.y-1}

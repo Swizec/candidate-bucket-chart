@@ -31,6 +31,11 @@ var Candidate = React.createClass({
         this.setState(info);
     },
 
+    componentDidMount: function () {
+        d3.select(this.getDOMNode())
+          .datum({id: "candidate-"+this.props.data.Candidate.Nid});
+    },
+
     render: function () {
         var className = [
             "candidate",
@@ -42,14 +47,14 @@ var Candidate = React.createClass({
             <g transform={"translate("+(this.props.x+this.state.x_offset)+", "+(this.props.y+this.state.y_offset)+")"}
                onClick={this.show_tooltip}
                onMouseOut={this.hide_tooltip}
-            className={className}
-            id={"candidate-"+this.props.data.Candidate.Nid}>
+               className={className}
+               id={"candidate-"+this.props.data.Candidate.Nid}>
                 <circle cx={this.props.r/2-this.state.x_offset}
                         cy={this.props.r/2-this.state.y_offset}
                         r={this.props.r}
                         />
                 <CandidateTooltip
-                        display={this.state.tooltip_shown ? "block" : "none"}
+                        shown={this.state.tooltip_shown}
                         tellSize={this.fixSize}
                         {... this.props} />
             </g>

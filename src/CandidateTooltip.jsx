@@ -51,6 +51,36 @@ var CandidateTooltip = React.createClass({
         }
     },
 
+    componentWillUpdate: function (props) {
+        if (props.shown) {
+            var svg = this.getDOMNode().parentNode.parentNode,
+                top_id = d3.select(this.getDOMNode().parentNode).datum().id;
+
+            // sort this candidate on top of others
+            d3.select(svg)
+              .selectAll("g.candidate")
+              .sort(function (a, b) {
+                  if (a.id === top_id) {
+                      return +1;
+                  }else if (b.id === top_id) {
+                      return -1;
+                  }else{
+                      return 0;
+                  }
+              });
+
+            // sort passline under this candidate
+            // but implicitly on top of others
+            d3.select(svg)
+              .selectAll("g.pass-line, g#"+top_id)
+              .sort(function (a, b) {
+                  if (!a) return -1;
+                  if (!b) return 1;
+                  return 0;
+              });
+        }
+    },
+
     render: function () {
         var candidate = this.props.data.Candidate;
 
@@ -60,7 +90,7 @@ var CandidateTooltip = React.createClass({
                            y="0"
                            width={this.props.width}
                            height={this.props.height}
-                           style={{display: this.props.display}}
+                           style={{display: this.props.shown ? "block" : "none"}}
                            id={"tooltip-"+this.props.data.Candidate.Nid}>
                 <div>
                     <img src={candidate.Avatar} />
