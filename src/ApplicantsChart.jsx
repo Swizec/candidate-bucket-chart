@@ -3,7 +3,8 @@ const React = require('react'),
       PureRenderMixin = require('react/addons').addons.PureRenderMixin,
       d3 = require('d3');
 
-const BubbleChart = require('./BubbleChart');
+const BubbleChart = require('./BubbleChart'),
+      Filters = require('./Filters');
 
 const Error = React.createClass({
     render: function () {
@@ -43,21 +44,29 @@ const ApplicantsChart = React.createClass({
             if (error) {
                 this.setState({error: new URIError(error.responseText)});
             }else{
-                this.setState({data: data[0]});
+                this.setState({data: data,
+                               filter: function (d, i) {
+                                   return i == 0;
+                               }});
             }
         }.bind(this));
+    },
+
+    updateFilter: function (filter) {
+        this.setState({filter: filter});
     },
 
     render: function () {
         if (this.state.error) {
             return (<Error error={this.state.error} />);
         }else if (this.state.data) {
-            var data = this.state.data;
+            var filtered_data = this.state.data.filter(this.state.filter)[0];
 
             return (
                 <div className="applicants-chart">
-                    <h2>{data.JobTitle} <small>{data.Responses.length} candidates</small></h2>
-                    <BubbleChart data={this.state.data} {... this.props} />
+                    <h2>{filtered_data.JobTitle} <small>{filtered_data.Responses.length} candidates</small></h2>
+                    <BubbleChart data={filtered_data} {... this.props} />
+                    <Filters updateFilter={this.updateFilter} data={this.state.data} />
                 </div>
             );
         }else {

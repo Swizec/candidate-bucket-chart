@@ -11,7 +11,10 @@ const time_format = d3.time.format('%d/%m/%Y');
 var data = _.range(5).map(function (job_id) {
     return {JobId: job_id,
             JobTitle: _.sample(["Big Time Server Manipulator", "Human User Shepherd",
-                                "Supreme NoSQL Editor", "Unequaled Interaction Architect"]),
+                                "Supreme NoSQL Editor", "Unequaled Interaction Architect",
+                                "Controlling Windows Vista Chino Wearer", 
+                                "Senior Wireframe Player", "Momentous Maintenance Daddy",
+                                "Major Python Networker", "Front End OSX Fixer"]),
             Responses: _.range(_.random(200, 450)).map(function (id) {
                 var birthdate = Faker.date.between(new Date('01/01/1965'), 
                                                    new Date('12/31/1994')),
