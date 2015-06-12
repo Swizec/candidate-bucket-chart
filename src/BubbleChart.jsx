@@ -117,6 +117,7 @@ var BubbleChart = React.createClass({
                     <Candidate x={this.xScale(this.props.x_value(d))}
                                y={this.yScale(this.props.y_value(d))}
                                r={this.rScale(this.props.r_value(d))}
+                               max_r={this.props.max_r}
                                key={"candidate-"+d.Candidate.Nid}
                                data={d}
                                maxWidth={this.props.width}
