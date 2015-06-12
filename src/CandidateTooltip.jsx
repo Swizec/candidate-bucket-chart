@@ -11,7 +11,7 @@ var CandidateTooltip = React.createClass({
     getDefaultProps: function () {
         return {
             width: 300,
-            height: 50,
+            height: 110,
         };
     },
 

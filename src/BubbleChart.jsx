@@ -1,5 +1,6 @@
 
 const React = require('react'),
+      _ = require('lodash'),
       d3 = require('d3');
 
 const Candidate = require('./Candidate'),
@@ -87,11 +88,15 @@ var BubbleChart = React.createClass({
         this.setState({passValue: value});
     },
 
-    updateUseTag: function (new_id) {
-        //var topmost = this.getDOMNode().getElementById("use");
-        //topmost.setAttributeNS("http://www.w3.org/1999/xlink",
-        //                       "xlink:href",
-        //                       "#" + new_id);
+    hide_tooltips: function (event) {
+        _.keys(this.refs).forEach(function (key) {
+            var component = this.refs[key];
+
+            if (!event.dispatchMarker.match(key)
+                    && component.hide_tooltip) {
+                component.hide_tooltip()
+            }
+        }.bind(this));
     },
 
     render: function () {
@@ -102,7 +107,9 @@ var BubbleChart = React.createClass({
             lineY = this.yScale(passValue);
 
         return (
-            <svg width={this.props.width} height={this.props.height} >
+            <svg width={this.props.width}
+                 height={this.props.height}
+                 onMouseDown={this.hide_tooltips}>
             {this.props.data.Responses.map(function (d) {
                 var passed = this.props.y_value(d) > (this.state.passValue || median);
 
@@ -115,7 +122,7 @@ var BubbleChart = React.createClass({
                                maxWidth={this.props.width}
                                maxHeight={this.props.height}
                                passed={passed}
-                               updateUseTag={this.updateUseTag} />
+                               ref={"candidate-"+d.Candidate.Nid} />
                 );
              }.bind(this))}
 
