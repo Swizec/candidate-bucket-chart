@@ -11,7 +11,7 @@ var CandidateTooltip = React.createClass({
     getDefaultProps: function () {
         return {
             width: 300,
-            height: 110,
+            height: 120,
         };
     },
 
@@ -94,10 +94,13 @@ var CandidateTooltip = React.createClass({
                            id={"tooltip-"+this.props.data.Candidate.Nid}>
                 <div>
                     <img src={candidate.Avatar} />
-                    <a href="#"><strong>{candidate.Name}</strong></a> <br />
-                    {candidate.CurrentJobTitle} <br />
-                    {candidate.Location}<br />
-                    Score: <strong>{this.props.data.OverallScore}</strong>
+                    <div className="info">
+                        <a href="#"><strong>{candidate.Name}</strong></a> <br />
+                        {candidate.CurrentJobTitle} <br />
+                        From <em>{candidate.Location}</em><br />
+                    </div>
+                    <Stars score={this.props.data.StarRating} />
+                    <strong className="score">{this.props.data.OverallScore}</strong>
                 </div>
             </foreignobject>
         );

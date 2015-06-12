@@ -5,7 +5,7 @@ const React = require('react'),
 var Stars = React.createClass({
     render: function () {
         return (
-            <div>
+            <div style={{display: "inline-block"}}>
             {_.range(10).map(function (i) {
                 var icon = "";
 
