@@ -20979,8 +20979,8 @@
 	                this.setState({ error: new URIError(error.responseText) });
 	            } else {
 	                this.setState({ data: data,
-	                    filter: function filter(d, i) {
-	                        return i == 0;
+	                    filter: function filter(d) {
+	                        return d[0];
 	                    } });
 	            }
 	        }).bind(this));
@@ -20994,7 +20994,7 @@
 	        if (this.state.error) {
 	            return React.createElement(Error, { error: this.state.error });
 	        } else if (this.state.data) {
-	            var filtered_data = this.state.data.filter(this.state.filter)[0];
+	            var filtered_data = this.state.filter(this.state.data);
 	
 	            return React.createElement(
 	                'div',
@@ -32752,7 +32752,7 @@
 	            margin: {
 	                top: 10,
 	                bottom: 10,
-	                left: 20,
+	                left: 25,
 	                right: 65
 	            }
 	        };
@@ -32768,6 +32768,7 @@
 	        this.yScale = d3.scale.linear();
 	        this.xScale = d3.scale.linear();
 	        this.rScale = d3.scale.linear();
+	        this.zoom = d3.behavior.zoom().x(this.xScale).y(this.yScale).scaleExtent([1, 8]).on('zoom', this.onZoom);
 	
 	        this.update_d3(this.props);
 	    },
@@ -32777,11 +32778,21 @@
 	    },
 	
 	    update_d3: function update_d3(props) {
-	        this.yScale.domain([d3.min(props.data.Responses.map(props.y_value)), d3.max(props.data.Responses.map(props.y_value))]).range([props.height - this.props.margin.bottom, props.margin.top]);
+	        this.yScale.domain([0, 100]).range([props.height - this.props.margin.bottom, props.margin.top]);
 	
 	        this.rScale.domain([d3.min(props.data.Responses.map(props.r_value)), d3.max(props.data.Responses.map(props.r_value))]).range([1, this.props.max_r]);
 	
 	        this.xScale.domain([d3.min(props.data.Responses.map(props.x_value)), d3.max(props.data.Responses.map(props.x_value))]).range([props.margin.left + props.max_r, props.width - props.margin.right - props.max_r]);
+	
+	        this.zoom.x(this.xScale).y(this.yScale).size([props.width, props.height]);
+	    },
+	
+	    componentDidMount: function componentDidMount() {
+	        d3.select(this.getDOMNode()).call(this.zoom);
+	    },
+	
+	    onZoom: function onZoom() {
+	        this.forceUpdate();
 	    },
 	
 	    updatePass: function updatePass(y) {
@@ -32802,9 +32813,7 @@
 	
 	    render: function render() {
 	        var median = d3.median(this.props.data.Responses.map(this.props.y_value)),
-	            initialY = this.yScale(median);
-	
-	        var passValue = this.state.passValue || median,
+	            passValue = this.state.passValue || median,
 	            lineY = this.yScale(passValue);
 	
 	        return React.createElement(
@@ -32830,7 +32839,7 @@
 	            React.createElement(PassLine, { minY: this.props.margin.top,
 	                maxY: this.props.height - this.props.margin.bottom,
 	                passValue: passValue,
-	                initialY: initialY,
+	                y: lineY,
 	                updatePass: this.updatePass,
 	                margin: this.props.margin }),
 	            React.createElement(BucketCounts, { data: this.props.data,
@@ -32838,8 +32847,7 @@
 	                height: this.props.height,
 	                lineY: lineY,
 	                y_value: this.props.y_value,
-	                passValue: passValue }),
-	            React.createElement('use', { id: 'use' })
+	                passValue: passValue })
 	        );
 	    }
 	});
@@ -45209,15 +45217,12 @@
 	'use strict';
 	
 	var React = __webpack_require__(/*! react */ 2),
-	    PureRenderMixin = __webpack_require__(/*! react/addons */ 159).addons.PureRenderMixin,
 	    _ = __webpack_require__(/*! lodash */ 179);
 	
 	var Stars = __webpack_require__(/*! ./Stars */ 183);
 	
 	var CandidateTooltip = React.createClass({
 	    displayName: 'CandidateTooltip',
-	
-	    mixins: [PureRenderMixin],
 	
 	    getDefaultProps: function getDefaultProps() {
 	        return {
@@ -45286,6 +45291,10 @@
 	                return 0;
 	            });
 	        }
+	    },
+	
+	    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	        return _.any([nextProps.width !== this.props.width, nextProps.height !== this.props.height, nextProps.shown !== this.props.shown, !_.isEqual(nextProps.data, this.props.data)]);
 	    },
 	
 	    render: function render() {
@@ -45394,12 +45403,15 @@
 
 	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/Users/Swizec/Documents/freelancing/bigscreen-applicants-chart/node_modules/react-hot-loader/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/Users/Swizec/Documents/freelancing/bigscreen-applicants-chart/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } (function () {
 	
-	"use strict";
+	'use strict';
 	
-	var React = __webpack_require__(/*! react */ 2);
+	var React = __webpack_require__(/*! react */ 2),
+	    PureRenderMixin = __webpack_require__(/*! react/addons */ 159).addons.PureRenderMixin;
 	
 	var Icon = React.createClass({
-	    displayName: "Icon",
+	    displayName: 'Icon',
+	
+	    mixins: [PureRenderMixin],
 	
 	    sizes: {
 	        male: [12, 32],
@@ -45408,30 +45420,30 @@
 	
 	    man_icon: function man_icon() {
 	        return React.createElement(
-	            "g",
+	            'g',
 	            null,
-	            React.createElement("path", { d: "M18 3c0 1.657-1.343 3-3 3s-3-1.343-3-3c0-1.657 1.343-3 3-3s3 1.343 3 3z" }),
-	            React.createElement("path", { d: "M18 8h-6c-1.105 0-2 0.895-2 2v10h2v12h2.5v-12h1v12h2.5v-12h2v-10c0-1.105-0.895-2-2-2z" })
+	            React.createElement('path', { d: 'M18 3c0 1.657-1.343 3-3 3s-3-1.343-3-3c0-1.657 1.343-3 3-3s3 1.343 3 3z' }),
+	            React.createElement('path', { d: 'M18 8h-6c-1.105 0-2 0.895-2 2v10h2v12h2.5v-12h1v12h2.5v-12h2v-10c0-1.105-0.895-2-2-2z' })
 	        );
 	    },
 	
 	    woman_icon: function woman_icon() {
 	        return React.createElement(
-	            "g",
+	            'g',
 	            null,
-	            React.createElement("path", { d: "M18 3c0 1.657-1.343 3-3 3s-3-1.343-3-3c0-1.657 1.343-3 3-3s3 1.343 3 3z" }),
-	            React.createElement("path", { d: "M22.469 16l1.531-1.109-4.165-6.441c-0.185-0.281-0.499-0.45-0.835-0.45h-8c-0.336 0-0.65 0.169-0.835 0.45l-4.165 6.441 1.531 1.109 3.458-4.487 1.202 2.804-4.191 7.683h3.833l0.667 10h2v-10h1v10h2l0.667-10h3.833l-4.191-7.683 1.202-2.804 3.458 4.487z" })
+	            React.createElement('path', { d: 'M18 3c0 1.657-1.343 3-3 3s-3-1.343-3-3c0-1.657 1.343-3 3-3s3 1.343 3 3z' }),
+	            React.createElement('path', { d: 'M22.469 16l1.531-1.109-4.165-6.441c-0.185-0.281-0.499-0.45-0.835-0.45h-8c-0.336 0-0.65 0.169-0.835 0.45l-4.165 6.441 1.531 1.109 3.458-4.487 1.202 2.804-4.191 7.683h3.833l0.667 10h2v-10h1v10h2l0.667-10h3.833l-4.191-7.683 1.202-2.804 3.458 4.487z' })
 	        );
 	    },
 	
 	    render: function render() {
 	        var size = this.sizes[this.props.gender],
-	            transform = "translate(" + (this.props.cx - size[0] / 2) + ", " + (this.props.cy - size[1] / 2) + ") scale(" + this.props.r + ")";
+	            transform = 'translate(' + (this.props.cx - size[0] / 2) + ', ' + (this.props.cy - size[1] / 2) + ') scale(' + this.props.r + ')';
 	
 	        return React.createElement(
-	            "g",
+	            'g',
 	            { transform: transform },
-	            this.props.gender == "male" ? this.man_icon() : this.woman_icon()
+	            this.props.gender == 'male' ? this.man_icon() : this.woman_icon()
 	        );
 	    }
 	});
@@ -45469,10 +45481,16 @@
 	    },
 	
 	    componentWillMount: function componentWillMount() {
-	        this.setState({ y: this.props.initialY });
+	        this.setState({ y: this.props.y });
+	    },
+	
+	    componentWillReceiveProps: function componentWillReceiveProps(props) {
+	        this.setState({ y: props.y });
 	    },
 	
 	    startDrag: function startDrag(event) {
+	        event.stopPropagation();
+	
 	        this.setState({
 	            isDragging: true,
 	            prev_y: event.clientY,
@@ -45481,6 +45499,8 @@
 	    },
 	
 	    drag: function drag(event) {
+	        event.stopPropagation();
+	
 	        if (!this.state.isDragging || this.state.y < this.props.minY && event.clientY < this.state.y || this.state.y > this.props.maxY && event.clientY > this.state.y) {
 	            return;
 	        }
@@ -45526,7 +45546,7 @@
 	            React.createElement(
 	                'text',
 	                { x: '100%', y: this.state.y - 4, textAnchor: 'end', className: 'text-big' },
-	                this.props.passValue
+	                Math.round(this.props.passValue)
 	            ),
 	            React.createElement('rect', { x: '0',
 	                y: this.state.y - this.state.height / 2,
@@ -45664,7 +45684,19 @@
 	    mixins: [PureRenderMixin],
 	
 	    getInitialState: function getInitialState() {
-	        return { selected: this.props.data[0].JobId };
+	        var job_id = this.props.data[0].JobId;
+	        return { selected: { job: job_id,
+	                education: null,
+	                gender: null },
+	            filters: { job: function job(d) {
+	                    return d.JobId == job_id;
+	                },
+	                education: function education(d) {
+	                    return true;
+	                },
+	                gender: function gender(d) {
+	                    return true;
+	                } } };
 	    },
 	
 	    get_jobs: function get_jobs() {
@@ -45675,11 +45707,104 @@
 	    },
 	
 	    picked_job: function picked_job() {
-	        var job_id = event.target.value;
+	        var job_id = event.target.value,
+	            selected = this.state.selected,
+	            filters = this.state.filters;
 	
-	        this.setState({ selected: job_id });
-	        this.props.updateFilter(function (d) {
+	        selected.job = job_id;
+	        filters.job = function (d) {
 	            return d.JobId == job_id;
+	        };
+	
+	        this.setState({ selected: selected,
+	            filters: filters });
+	
+	        this.updateFilters();
+	    },
+	
+	    get_educations: function get_educations() {
+	        var job = this.state.selected.job,
+	            data = this.props.data.filter(this.state.filters.job)[0].Responses;
+	
+	        return [{ value: null,
+	            label: 'All' }].concat(data.map(function (d) {
+	            return { value: d.Candidate.EducationLevel,
+	                label: d.Candidate.EducationLevel };
+	        }));
+	    },
+	
+	    picked_education: function picked_education() {
+	        var education = event.target.value,
+	            filter;
+	
+	        if (education != null) {
+	            filter = function (d) {
+	                return d.Candidate.EducationLevel == education;
+	            };
+	        } else {
+	            filter = function () {
+	                return true;
+	            };
+	        }
+	
+	        var selected = this.state.selected,
+	            filters = this.state.filters;
+	
+	        selected.education = education;
+	        filters.education = filter;
+	
+	        this.setState({ selected: selected,
+	            filters: filters });
+	        this.updateFilters();
+	    },
+	
+	    get_genders: function get_genders() {
+	        var job = this.state.selected.job,
+	            data = this.props.data.filter(this.state.filters.job)[0].Responses;
+	
+	        return [{ value: null,
+	            label: 'All' }].concat(data.map(function (d) {
+	            return { value: d.Candidate.Gender,
+	                label: d.Candidate.Gender };
+	        }));
+	    },
+	
+	    picked_gender: function picked_gender() {
+	        var gender = event.target.value,
+	            filter;
+	
+	        if (gender != null) {
+	            filter = function (d) {
+	                return d.Candidate.Gender == gender;
+	            };
+	        } else {
+	            filter = function () {
+	                return true;
+	            };
+	        }
+	
+	        var selected = this.state.selected,
+	            filters = this.state.filters;
+	
+	        selected.gender = gender;
+	        filters.gender = filter;
+	
+	        this.setState({ selected: selected,
+	            filters: filters });
+	        this.updateFilters();
+	    },
+	
+	    updateFilters: function updateFilters() {
+	        var job = this.state.filters.job,
+	            education = this.state.filters.education,
+	            gender = this.state.filters.gender;
+	
+	        this.props.updateFilter(function (d) {
+	            var data = d.filter(job)[0];
+	
+	            data.Responses = data.Responses.filter(education).filter(gender);
+	
+	            return data;
 	        });
 	    },
 	
@@ -45694,7 +45819,17 @@
 	                    onChange: this.picked_job,
 	                    label: 'Job',
 	                    name: 'job',
-	                    selected: this.state.selected })
+	                    selected: this.state.selected.job }),
+	                React.createElement(Dropdown, { options: this.get_educations(),
+	                    onChange: this.picked_education,
+	                    label: 'Education level',
+	                    name: 'education',
+	                    selected: this.state.selected.education }),
+	                React.createElement(Dropdown, { options: this.get_genders(),
+	                    onChange: this.picked_gender,
+	                    label: 'Gender',
+	                    name: 'gender',
+	                    selected: this.state.selected.gender })
 	            )
 	        );
 	    }
