@@ -1,7 +1,12 @@
 
-const React = require('react');
+const React = require('react'),
+      PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+
+
 
 var Icon = React.createClass({
+    mixins: [PureRenderMixin],
+
     sizes: {
         male: [12, 32],
         female: [19, 32]

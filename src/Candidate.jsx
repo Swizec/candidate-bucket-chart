@@ -61,10 +61,11 @@ var Candidate = React.createClass({
                       r={this.props.r/this.props.max_r}
                       gender={this.props.data.Candidate.Gender.toLowerCase()}
                       />
+
                 <CandidateTooltip
                         shown={this.state.tooltip_shown}
                         tellSize={this.fixSize}
-                        {... this.props} />
+{... this.props} />
             </g>
         );
     }

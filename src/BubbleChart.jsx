@@ -26,7 +26,7 @@ var BubbleChart = React.createClass({
             margin: {
                 top: 10,
                 bottom: 10,
-                left: 20,
+                left: 25,
                 right: 65
             }
         };
@@ -42,6 +42,11 @@ var BubbleChart = React.createClass({
         this.yScale = d3.scale.linear();
         this.xScale = d3.scale.linear();
         this.rScale = d3.scale.linear();
+        this.zoom = d3.behavior.zoom()
+                      .x(this.xScale)
+                      .y(this.yScale)
+                      .scaleExtent([1, 8])
+                      .on("zoom", this.onZoom);
 
         this.update_d3(this.props);
     },
@@ -53,8 +58,8 @@ var BubbleChart = React.createClass({
     update_d3: function (props) {
         this.yScale
             .domain([
-                d3.min(props.data.Responses.map(props.y_value)),
-                d3.max(props.data.Responses.map(props.y_value))
+                0,
+                100
             ])
             .range([
                 props.height-this.props.margin.bottom,
@@ -80,6 +85,20 @@ var BubbleChart = React.createClass({
                 props.margin.left+props.max_r,
                 props.width-props.margin.right-props.max_r
             ]);
+
+        this.zoom
+            .x(this.xScale)
+            .y(this.yScale)
+            .size([props.width, props.height]);
+    },
+
+    componentDidMount: function () {
+        d3.select(this.getDOMNode())
+          .call(this.zoom);
+    },
+
+    onZoom: function () {
+        this.forceUpdate();
     },
 
     updatePass: function (y) {
@@ -101,9 +120,7 @@ var BubbleChart = React.createClass({
 
     render: function () {
         var median = d3.median(this.props.data.Responses.map(this.props.y_value)),
-            initialY = this.yScale(median);
-
-        var passValue = this.state.passValue || median,
+            passValue = this.state.passValue || median,
             lineY = this.yScale(passValue);
 
         return (
@@ -127,23 +144,21 @@ var BubbleChart = React.createClass({
                 );
              }.bind(this))}
 
-            <Axis {...this.props} yScale={this.yScale}/>
+                    <Axis {...this.props} yScale={this.yScale}/>
 
-            <PassLine minY={this.props.margin.top}
-                      maxY={this.props.height-this.props.margin.bottom}
-                      passValue={passValue}
-                      initialY={initialY}
-                      updatePass={this.updatePass}
-                      margin={this.props.margin} />
+                    <PassLine minY={this.props.margin.top}
+                              maxY={this.props.height-this.props.margin.bottom}
+                              passValue={passValue}
+                              y={lineY}
+                              updatePass={this.updatePass}
+                              margin={this.props.margin} />
 
-            <BucketCounts data={this.props.data}
-                          width={this.props.width}
-                          height={this.props.height}
-                          lineY={lineY}
-                          y_value={this.props.y_value}
-                          passValue={passValue} />
-
-            <use id="use"></use>
+                    <BucketCounts data={this.props.data}
+                                  width={this.props.width}
+                                  height={this.props.height}
+                                  lineY={lineY}
+                                  y_value={this.props.y_value}
+                                  passValue={passValue} />
 
             </svg>
         );

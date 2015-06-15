@@ -1,13 +1,10 @@
 
 const React = require('react'),
-      PureRenderMixin = require('react/addons').addons.PureRenderMixin,
       _ = require('lodash');
 
 const Stars = require('./Stars');
 
 var CandidateTooltip = React.createClass({
-    mixins: [PureRenderMixin],
-
     getDefaultProps: function () {
         return {
             width: 300,
@@ -79,6 +76,14 @@ var CandidateTooltip = React.createClass({
                   return 0;
               });
         }
+    },
+
+    shouldComponentUpdate: function (nextProps, nextState) {
+        return _.any([nextProps.width !== this.props.width,
+                      nextProps.height !== this.props.height,
+                      nextProps.shown !== this.props.shown,
+                      !_.isEqual(nextProps.data, this.props.data)]);
+
     },
 
     render: function () {
