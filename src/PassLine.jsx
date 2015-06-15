@@ -80,7 +80,7 @@ var PassLine = React.createClass({
                 </text>
 
                 <text x="100%" y={this.state.y-4} textAnchor="end" className="text-big">
-                    {this.props.passValue}
+                    {Math.round(this.props.passValue)}
                 </text>
 
                 <rect x="0"

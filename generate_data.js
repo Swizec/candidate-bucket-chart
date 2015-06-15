@@ -31,7 +31,7 @@ var data = _.range(5).map(function (job_id) {
                         "Avatar": "images/person-"+_.sample(pics[gender])+".jpg",
                         "Country": Faker.address.country(),
                         "Location": Faker.address.city(),
-                        "EducationLevel": "Bachelor's Degree",
+                        "EducationLevel": _.sample(["Bachelor's Degree", "Doctorate", "Master's", "High School"]),
                         "CurrentJobTitle": "Undergraduate University Student",
                         "Source": "LinkedIn"
                     },

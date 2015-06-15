@@ -45,8 +45,8 @@ const ApplicantsChart = React.createClass({
                 this.setState({error: new URIError(error.responseText)});
             }else{
                 this.setState({data: data,
-                               filter: function (d, i) {
-                                   return i == 0;
+                               filter: function (d) {
+                                   return d[0]
                                }});
             }
         }.bind(this));
@@ -60,7 +60,7 @@ const ApplicantsChart = React.createClass({
         if (this.state.error) {
             return (<Error error={this.state.error} />);
         }else if (this.state.data) {
-            var filtered_data = this.state.data.filter(this.state.filter)[0];
+            var filtered_data = this.state.filter(this.state.data);
 
             return (
                 <div className="applicants-chart">
