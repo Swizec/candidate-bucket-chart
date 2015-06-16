@@ -44,7 +44,7 @@ var Filters = React.createClass({
         var job = this.state.selected.job,
             data = this.props.data.filter(this.state.filters.job)[0].Responses;
 
-        return [{value: null,
+        return [{value: "__reset_filter__",
                  label: "All"}].concat(
                      _.uniq(data,
                             function (d) { return d.Candidate.EducationLevel; }
@@ -59,7 +59,7 @@ var Filters = React.createClass({
         var education = event.target.value,
             filter;
 
-        if (education != null) {
+        if (education != null && education != "__reset_filter__") {
             filter = function (d) {
                 return d.Candidate.EducationLevel == education;
             };
@@ -82,7 +82,7 @@ var Filters = React.createClass({
         var job = this.state.selected.job,
             data = this.props.data.filter(this.state.filters.job)[0].Responses;
 
-        return [{value: null,
+        return [{value: "__reset_filter__",
                  label: "All"}].concat(
                      _.uniq(data,
                             function (d) { return d.Candidate.Gender; }
@@ -97,7 +97,7 @@ var Filters = React.createClass({
         var gender = event.target.value,
             filter;
 
-        if (gender != null ) {
+        if (gender != null && gender != "__reset_filter__") {
             filter = function (d) { return d.Candidate.Gender == gender; };
         }else{
             filter = function () { return true; };
@@ -120,7 +120,7 @@ var Filters = React.createClass({
             gender = this.state.filters.gender;
 
         this.props.updateFilter(function (d) {
-            var data = d.filter(job)[0];
+            var data = _.cloneDeep(d.filter(job)[0]);
 
             data.Responses = data.Responses
                                  .filter(education)
