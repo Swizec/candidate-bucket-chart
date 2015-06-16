@@ -3,7 +3,7 @@ const React = require('react'),
       PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var Filters = React.createClass({
-    mixins: [PureRenderMixin],
+    //mixins: [PureRenderMixin],
 
     getInitialState: function () {
         var job_id = this.props.data[0].JobId;
@@ -18,14 +18,16 @@ var Filters = React.createClass({
     },
 
     get_jobs: function () {
-        return this.props.data.map(function (d) {
-            return {value: d.JobId,
-                    label: d.JobTitle};
-        });
+        return _.uniq(this.props.data,
+                      function (d) { return d.JobId; })
+                .map(function (d) {
+                    return {value: d.JobId,
+                            label: d.JobTitle};
+                });
     },
 
     picked_job: function () {
-        var job_id = event.target.value,
+        var job_id = Number(event.target.value),
             selected = this.state.selected,
             filters = this.state.filters;
 
@@ -43,10 +45,14 @@ var Filters = React.createClass({
             data = this.props.data.filter(this.state.filters.job)[0].Responses;
 
         return [{value: null,
-                 label: "All"}].concat(data.map(function (d) {
-                     return {value: d.Candidate.EducationLevel,
-                             label: d.Candidate.EducationLevel};
-                 }));
+                 label: "All"}].concat(
+                     _.uniq(data,
+                            function (d) { return d.Candidate.EducationLevel; }
+                     )
+                      .map(function (d) {
+                          return {value: d.Candidate.EducationLevel,
+                                  label: d.Candidate.EducationLevel};
+                      }));
     },
 
     picked_education: function () {
@@ -77,10 +83,14 @@ var Filters = React.createClass({
             data = this.props.data.filter(this.state.filters.job)[0].Responses;
 
         return [{value: null,
-                 label: "All"}].concat(data.map(function (d) {
-                     return {value: d.Candidate.Gender,
-                             label: d.Candidate.Gender};
-                 }));
+                 label: "All"}].concat(
+                     _.uniq(data,
+                            function (d) { return d.Candidate.Gender; }
+                     )
+                      .map(function (d) {
+                          return {value: d.Candidate.Gender,
+                                  label: d.Candidate.Gender};
+                      }));
     },
 
     picked_gender: function () {
@@ -153,15 +163,12 @@ var Dropdown = React.createClass({
             <div className="form-group">
                 <label htmlFor={"dropdown-"+this.props.name}>{this.props.label}: </label>
                 <select name={this.props.name} id={"dropdown-"+this.props.name}
-                        onChange={this.props.onChange}>
+                        onChange={this.props.onChange}
+                        value={this.props.selected}>
                     {this.props.options.map(function (option) {
-                        var selected = this.props.selected == option.value
-                                                            ? "selected"
-                                                            : "";
                         return (
                             <option value={option.value}
-                                    key={"option-"+this.props.name+"-"+option.value}
-                                    selected={selected}>
+                                    key={"option-"+this.props.name+"-"+option.value}>
                             {option.label}
                             </option>
                         );
