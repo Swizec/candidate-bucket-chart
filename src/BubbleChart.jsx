@@ -42,10 +42,13 @@ var BubbleChart = React.createClass({
         this.yScale = d3.scale.linear();
         this.xScale = d3.scale.linear();
         this.rScale = d3.scale.linear();
+        this.zoomScaleMultiplier = d3.scale.linear()
+                                     .domain([1, 8])
+                                     .range([1, 1.6]);
         this.zoom = d3.behavior.zoom()
                       .x(this.xScale)
                       .y(this.yScale)
-                      .scaleExtent([1, 8])
+                      .scaleExtent(this.zoomScaleMultiplier.domain())
                       .on("zoom", this.onZoom);
 
         this.update_d3(this.props);
@@ -98,6 +101,12 @@ var BubbleChart = React.createClass({
     },
 
     onZoom: function () {
+        let multiplier = this.zoomScaleMultiplier(d3.event.scale);
+
+        this.rScale.range(
+            [1, this.props.max_r].map(function (v) {
+                return v*multiplier;
+            }));
         this.forceUpdate();
     },
 
