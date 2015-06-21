@@ -1,5 +1,6 @@
 
-const React = require('react');
+const React = require('react'),
+      PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 const Error = React.createClass({
     render: function () {
@@ -41,7 +42,122 @@ const Dropdown = React.createClass({
     }
 });
 
+const SubFilters = React.createClass({
+    //mixins: [PureRenderMixin],
+
+    getInitialState: function () {
+        return {selected: {education: null,
+                           gender: null},
+                filters: {education: function (d) { return true; },
+                          gender: function (d) { return true; }}};
+    },
+
+    get_educations: function () {
+        var job = this.state.selected.job,
+            data = this.props.data.Responses;
+
+        return [{value: "__reset_filter__",
+                 label: "All"}].concat(
+                     _.uniq(data,
+                            function (d) { return d.Candidate.EducationLevel; }
+                     )
+                      .map(function (d) {
+                          return {value: d.Candidate.EducationLevel,
+                                  label: d.Candidate.EducationLevel};
+                      }));
+    },
+
+    picked_education: function () {
+        var education = event.target.value,
+            filter;
+
+        if (education != null && education != "__reset_filter__") {
+            filter = function (d) {
+                return d.Candidate.EducationLevel == education;
+            };
+        }else{
+            filter = function () { return true; };
+        }
+
+        var selected = this.state.selected,
+            filters = this.state.filters;
+
+        selected.education = education;
+        filters.education = filter;
+
+        this.setState({selected: selected,
+                       filters: filters});
+        this.updateFilters();
+    },
+
+    get_genders: function () {
+        var job = this.state.selected.job,
+            data = this.props.data.Responses;
+
+        return [{value: "__reset_filter__",
+                 label: "All"}].concat(
+                     _.uniq(data,
+                            function (d) { return d.Candidate.Gender; }
+                     )
+                      .map(function (d) {
+                          return {value: d.Candidate.Gender,
+                                  label: d.Candidate.Gender};
+                      }));
+    },
+
+    picked_gender: function () {
+        var gender = event.target.value,
+            filter;
+
+        if (gender != null && gender != "__reset_filter__") {
+            filter = function (d) { return d.Candidate.Gender == gender; };
+        }else{
+            filter = function () { return true; };
+        }
+
+        var selected = this.state.selected,
+            filters = this.state.filters;
+
+        selected.gender = gender;
+        filters.gender = filter;
+
+        this.setState({selected: selected,
+                       filters: filters});
+        this.updateFilters();
+    },
+
+    updateFilters: function () {
+        var education = this.state.filters.education,
+            gender = this.state.filters.gender;
+
+        this.props.updateFilter(function (d) {
+            return _.all([education(d),
+                          gender(d)]);
+        }.bind(this));
+    },
+
+    render: function () {
+        return (
+            <div className="form-group">
+                    <Dropdown options={this.get_educations()}
+                              onChange={this.picked_education}
+                              label="Education level"
+                              name="education"
+                              selected={this.state.selected.education} />
+
+                    <Dropdown options={this.get_genders()}
+                              onChange={this.picked_gender}
+                              label="Gender"
+                              name="gender"
+                              selected={this.state.selected.gender} />
+            </div>
+        );
+    }
+});
+
 const Filters = React.createClass({
+    mixins: [PureRenderMixin],
+
     getInitialState: function () {
         return {loading: true};
     },
@@ -129,11 +245,22 @@ const Filters = React.createClass({
         }.bind(this));
     },
 
+    updateFilter: function (func) {
+        this.setState({filter: func});
+    },
+
     componentWillUpdate: function (nextProps, nextState) {
         if (!nextState.selectedBA || !nextState.selectedJob) {
             this.props.returnData(null);
         }else{
-            this.props.returnData(nextState.data);
+            if (nextState.data) {
+                console.log(nextState);
+                let data = _.cloneDeep(nextState.data);
+                data.Responses = data.Responses.filter(this.state.filter
+                                                     || function () { return true; });
+
+                this.props.returnData(data);
+            }
         }
     },
 
@@ -141,7 +268,8 @@ const Filters = React.createClass({
         let status = null,
             BA_dropdown = null,
             jobs_dropdown = null,
-            help = null
+            help = null,
+            subfilters = null;
 
         if (this.state.loading) {
             status = (
@@ -173,6 +301,13 @@ const Filters = React.createClass({
             );
         }
 
+        if (this.state.data) {
+            subfilters = (
+                <SubFilters updateFilter={this.updateFilter}
+                            data={this.state.data} />
+            );
+        }
+
         if (!this.state.selectedBA || !this.state.selectedJob) {
             help = (
                 <h2>Pick a business account and a job to see candidates</h2>
@@ -185,8 +320,8 @@ const Filters = React.createClass({
                 {status}
                 <form className="form-inline">
                     {BA_dropdown}
-
                     {jobs_dropdown}
+                    {subfilters}
                 </form>
             </div>
         );
