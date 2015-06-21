@@ -113,6 +113,8 @@ const Filters = React.createClass({
 
         if (job_id != "null") {
             this.fetchData(this.state.selectedBA, job_id);
+        }else{
+            this.setState({selectedJob: null});
         }
     },
 
@@ -124,12 +126,15 @@ const Filters = React.createClass({
             }
 
             this.setState({data: data});
-            this.updateDataFilter();
         }.bind(this));
     },
 
-    updateDataFilter: function () {
-        this.props.returnData(this.state.data);
+    componentWillUpdate: function (nextProps, nextState) {
+        if (!nextState.selectedBA || !nextState.selectedJob) {
+            this.props.returnData(null);
+        }else{
+            this.props.returnData(nextState.data);
+        }
     },
 
     render: function () {
