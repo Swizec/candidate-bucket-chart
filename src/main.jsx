@@ -3,6 +3,6 @@ const React = require('react'),
       ApplicantsChart = require('./ApplicantsChart');
 
 React.render(
-    <ApplicantsChart url="bigscreen.json" />,
+    <ApplicantsChart urlRoot="data/" />,
     document.querySelectorAll('.container')[0]
 );

@@ -6,24 +6,6 @@ const React = require('react'),
 const BubbleChart = require('./BubbleChart'),
       Filters = require('./Filters');
 
-const Error = React.createClass({
-    render: function () {
-        return (
-            <div className="alert alert-danger" role="alert">
-                Error: {this.props.error.message}
-            </div>
-        );
-    }
-});
-
-const Loading = React.createClass({
-    render: function () {
-        return (
-            <div>Loading data ...</div>
-        );
-    }
-});
-
 const ApplicantsChart = React.createClass({
     mixins: [PureRenderMixin],
 
@@ -38,35 +20,38 @@ const ApplicantsChart = React.createClass({
             max_r: 10
         };
     },
+    /* componentDidMount: function () {
+       d3.json(this.props.url, function (error, data) {
+       if (error) {
+       this.setState({error: new URIError(error.responseText)});
+       }else{
+       this.setState({data: data,
+       filter: function (d) {
+       return d[0]
+       }});
+       }
+       }.bind(this));
+       }, */
 
-    componentDidMount: function () {
-        d3.json(this.props.url, function (error, data) {
-            if (error) {
-                this.setState({error: new URIError(error.responseText)});
-            }else{
-                this.setState({data: data,
-                               filter: function (d) {
-                                   return d[0]
-                               }});
-            }
-        }.bind(this));
-    },
+    /* updateFilter: function (filter) {
+       this.setState({filter: filter});
+       }, */
 
-    updateFilter: function (filter) {
-        this.setState({filter: filter});
+    updateData: function (data) {
+        this.setState({data: data});
     },
 
     render: function () {
-        if (this.state.error) {
-            return (<Error error={this.state.error} />);
+        if (!this.state.data) {
+            return (
+                <Filters urlRoot={this.props.urlRoot} />
+            );
         }else if (this.state.data) {
-            var filtered_data = this.state.filter(this.state.data);
-
             return (
                 <div className="applicants-chart">
-                    <h2>{filtered_data.JobTitle} <small>{filtered_data.Responses.length} candidates</small></h2>
+                    <h2>{data.JobTitle} <small>{_.size(data.Responses)} candidates</small></h2>
                     <BubbleChart data={filtered_data} {... this.props} />
-                    <Filters updateFilter={this.updateFilter} data={this.state.data} />
+                    <Filters urlRoot={this.props.urlRoot} />
                 </div>
             );
         }else {
