@@ -157,26 +157,28 @@ var BubbleChart = React.createClass({
             <svg width={this.props.width}
                  height={this.props.height}
                  onMouseDown={this.hide_tooltips}>
-            {this.props.data.Responses.map(function (d) {
-                var passed = this.props.y_value(d) > (this.state.passValue || median);
+                {this.props.data.Responses.map(function (d) {
+                    var passed = this.props.y_value(d) > (this.state.passValue || median);
 
-                return (
-                    <Candidate x={this.xScale(this.props.x_value(d))}
-                               y={this.yScale(this.props.y_value(d))}
-                               r={this.rScale(this.props.r_value(d))}
-                               max_r={this.props.max_r}
-                               key={"candidate-"+d.id}
-                               data={d}
-                               maxWidth={this.props.width}
-                               maxHeight={this.props.height}
-                               passed={passed}
-                               ref={"candidate-"+d.id} />
-                );
-             }.bind(this))}
+                    return (
+                        <Candidate x={this.xScale(this.props.x_value(d))}
+                        y={this.yScale(this.props.y_value(d))}
+                        r={this.rScale(this.props.r_value(d))}
+                        max_r={this.props.max_r}
+                        key={"candidate-"+d.id}
+                        data={d}
+                        maxX={this.props.width}
+                        maxY={this.props.height}
+                        minX={this.props.margin.left}
+                        minY={this.props.margin.top}
+                        passed={passed}
+                        ref={"candidate-"+d.id} />
+                    );
+                 }.bind(this))}
 
-                    <Axis {...this.props} yScale={this.yScale}/>
+                        <Axis {...this.props} yScale={this.yScale}/>
 
-                    {metaTools}
+                        {metaTools}
             </svg>
         );
     }

@@ -31,10 +31,10 @@ var CandidateTooltip = React.createClass({
         var x_offset = 0,
             y_offset = 0;
 
-        if (props.x+props.width > props.maxWidth) {
+        if (props.x+props.width > props.maxX) {
             x_offset  = -props.width;
         }
-        if (props.y+props.height > props.maxHeight) {
+        if (props.y+props.height > props.maxY) {
             y_offset = -props.height
         }
 

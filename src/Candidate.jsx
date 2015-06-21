@@ -44,6 +44,13 @@ var Candidate = React.createClass({
           .datum({id: "candidate-"+this.props.data.id});
     },
 
+    beyondEdge: function () {
+        return this.props.x > this.props.maxX
+            || this.props.x < this.props.minX
+            || this.props.y > this.props.maxY
+            || this.props.y < this.props.minY;
+    },
+
     render: function () {
         var gender = this.props.data.Candidate.Gender;
         gender = gender ? gender.toLowerCase() : "none";
@@ -54,6 +61,10 @@ var Candidate = React.createClass({
             gender,
             this.props.passed ? "passed" : "no-passed"
         ].join(" ");
+
+        if (this.beyondEdge()) {
+            return null;
+        }
 
         return (
             <g transform={"translate("+(this.props.x+this.state.x_offset)+", "+(this.props.y+this.state.y_offset)+")"}
@@ -69,7 +80,7 @@ var Candidate = React.createClass({
                 <CandidateTooltip
                         shown={this.state.tooltip_shown}
                         tellSize={this.fixSize}
-{... this.props} />
+                        {... this.props} />
             </g>
         );
     }
