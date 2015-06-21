@@ -254,7 +254,6 @@ const Filters = React.createClass({
             this.props.returnData(null);
         }else{
             if (nextState.data) {
-                console.log(nextState);
                 let data = _.cloneDeep(nextState.data);
                 data.Responses = data.Responses.filter(this.state.filter
                                                      || function () { return true; });

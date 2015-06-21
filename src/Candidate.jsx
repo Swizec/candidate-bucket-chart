@@ -41,13 +41,17 @@ var Candidate = React.createClass({
 
     componentDidMount: function () {
         d3.select(this.getDOMNode())
-          .datum({id: "candidate-"+this.props.data.Candidate.Nid});
+          .datum({id: "candidate-"+this.props.data.Candidate.nid});
     },
 
     render: function () {
+        var gender = this.props.data.Candidate.Gender;
+        gender = gender ? gender.toLowerCase() : "none";
+
+
         var className = [
             "candidate",
-            this.props.data.Candidate.Gender.toLowerCase(),
+            gender,
             this.props.passed ? "passed" : "no-passed"
         ].join(" ");
 
@@ -55,11 +59,11 @@ var Candidate = React.createClass({
             <g transform={"translate("+(this.props.x+this.state.x_offset)+", "+(this.props.y+this.state.y_offset)+")"}
                onClick={this.toggle_tooltip}
                className={className}
-               id={"candidate-"+this.props.data.Candidate.Nid}>
+               id={"candidate-"+this.props.data.Candidate.nid}>
                 <Icon cx={this.props.r/2-this.state.x_offset}
                       cy={this.props.r/2-this.state.y_offset}
                       r={this.props.r/this.props.max_r}
-                      gender={this.props.data.Candidate.Gender.toLowerCase()}
+                      gender={gender}
                       />
 
                 <CandidateTooltip
