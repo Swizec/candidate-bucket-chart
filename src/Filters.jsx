@@ -105,8 +105,6 @@ const SubFilters = React.createClass({
         var gender = event.target.value,
             filter;
 
-        console.log(gender);
-
         if (!gender) {
             filter = function (d) { return !d.Candidate.Gender; };
         }else if (gender != "__reset_filter__") {
@@ -123,7 +121,6 @@ const SubFilters = React.createClass({
     },
 
     componentWillUpdate: function (nextProps, nextState) {
-        console.log("component update!");
         var education = nextState.filters.education,
             gender = nextState.filters.gender;
 

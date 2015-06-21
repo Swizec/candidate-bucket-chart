@@ -10,8 +10,8 @@ module.exports = {
     ],
     output: {
         filename: 'bundle.js',
-        path: path.join(__dirname, 'scripts'),
-        publicPath: '/scripts/'
+        path: path.join(__dirname, 'build'),
+        publicPath: '/build/'
     },
     plugins: [
        // new webpack.HotModuleReplacementPlugin(),

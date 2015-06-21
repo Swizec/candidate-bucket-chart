@@ -11,7 +11,7 @@ module.exports = function (grunt) {
                     optimization: 2
                 },
                 files: {
-                    "scripts/style.css": "src/style.less"
+                    "build/style.css": "src/style.less"
                 }
             }
         },
@@ -28,6 +28,6 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('default', ['less', 'browserify:dev', 'watch']);
-    grunt.registerTask('package', ['less', 'browserify:production']);
+    grunt.registerTask('default', ['less', 'watch']);
+    grunt.registerTask('package', ['less']);
 };
