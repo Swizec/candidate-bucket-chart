@@ -43,18 +43,17 @@ const Dropdown = React.createClass({
 });
 
 const SubFilters = React.createClass({
-    //mixins: [PureRenderMixin],
+    mixins: [PureRenderMixin],
 
     getInitialState: function () {
-        return {selected: {education: null,
-                           gender: null},
+        return {education: null,
+                gender: null,
                 filters: {education: function (d) { return true; },
                           gender: function (d) { return true; }}};
     },
 
     get_educations: function () {
-        var job = this.state.selected.job,
-            data = this.props.data.Responses;
+        var data = this.props.data.Responses;
 
         return [{value: "__reset_filter__",
                  label: "All"}].concat(
@@ -71,7 +70,9 @@ const SubFilters = React.createClass({
         var education = event.target.value,
             filter;
 
-        if (education != null && education != "__reset_filter__") {
+        if (!education) {
+            filter = function (d) { return !d.Candidate.EducationLevel; }
+        }else if (education != "__reset_filter__") {
             filter = function (d) {
                 return d.Candidate.EducationLevel == education;
             };
@@ -79,20 +80,15 @@ const SubFilters = React.createClass({
             filter = function () { return true; };
         }
 
-        var selected = this.state.selected,
-            filters = this.state.filters;
-
-        selected.education = education;
+        var filters = this.state.filters;
         filters.education = filter;
 
-        this.setState({selected: selected,
+        this.setState({education: education,
                        filters: filters});
-        this.updateFilters();
     },
 
     get_genders: function () {
-        var job = this.state.selected.job,
-            data = this.props.data.Responses;
+        var data = this.props.data.Responses;
 
         return [{value: "__reset_filter__",
                  label: "All"}].concat(
@@ -109,26 +105,27 @@ const SubFilters = React.createClass({
         var gender = event.target.value,
             filter;
 
-        if (gender != null && gender != "__reset_filter__") {
+        console.log(gender);
+
+        if (!gender) {
+            filter = function (d) { return !d.Candidate.Gender; };
+        }else if (gender != "__reset_filter__") {
             filter = function (d) { return d.Candidate.Gender == gender; };
         }else{
             filter = function () { return true; };
         }
 
-        var selected = this.state.selected,
-            filters = this.state.filters;
-
-        selected.gender = gender;
+        var filters = this.state.filters;
         filters.gender = filter;
 
-        this.setState({selected: selected,
+        this.setState({gender: gender,
                        filters: filters});
-        this.updateFilters();
     },
 
-    updateFilters: function () {
-        var education = this.state.filters.education,
-            gender = this.state.filters.gender;
+    componentWillUpdate: function (nextProps, nextState) {
+        console.log("component update!");
+        var education = nextState.filters.education,
+            gender = nextState.filters.gender;
 
         this.props.updateFilter(function (d) {
             return _.all([education(d),
@@ -143,13 +140,13 @@ const SubFilters = React.createClass({
                               onChange={this.picked_education}
                               label="Education level"
                               name="education"
-                              selected={this.state.selected.education} />
+                              selected={this.state.education} />
 
                     <Dropdown options={this.get_genders()}
                               onChange={this.picked_gender}
                               label="Gender"
                               name="gender"
-                              selected={this.state.selected.gender} />
+                              selected={this.state.gender} />
             </div>
         );
     }
@@ -254,12 +251,12 @@ const Filters = React.createClass({
         this.setState({filter: func});
     },
 
-    componentWillUpdate: function (nextProps, nextState) {
-        if (!nextState.selectedBA || !nextState.selectedJob) {
+    componentDidUpdate: function () {
+        if (!this.state.selectedBA || !this.state.selectedJob) {
             this.props.returnData(null);
         }else{
-            if (nextState.data) {
-                let data = _.cloneDeep(nextState.data);
+            if (this.state.data) {
+                let data = _.cloneDeep(this.state.data);
                 data.Responses = data.Responses.filter(this.state.filter
                                                      || function () { return true; });
 
