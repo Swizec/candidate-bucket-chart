@@ -11,14 +11,14 @@ const Candidate = require('./Candidate'),
 var BubbleChart = React.createClass({
 
     getDefaultProps: function () {
-        var time_format = d3.time.format('%d-%m-%Y');
+        var random = d3.random.irwinHall(5);
 
         return {
             y_value: function (d) {
                 return d.OverallScore;
             },
             x_value: function (d) {
-                return time_format.parse(d.Candidate.DateOfBirth);
+                return d.randomProp;
             },
             r_value: function (d) {
                 return d.OverallScore;
@@ -165,12 +165,12 @@ var BubbleChart = React.createClass({
                                y={this.yScale(this.props.y_value(d))}
                                r={this.rScale(this.props.r_value(d))}
                                max_r={this.props.max_r}
-                               key={"candidate-"+d.Candidate.nid}
+                               key={"candidate-"+d.id}
                                data={d}
                                maxWidth={this.props.width}
                                maxHeight={this.props.height}
                                passed={passed}
-                               ref={"candidate-"+d.Candidate.nid} />
+                               ref={"candidate-"+d.id} />
                 );
              }.bind(this))}
 

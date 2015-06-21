@@ -238,7 +238,12 @@ const Filters = React.createClass({
         this.__fetch("reports/"+account_id+"/"+job_id, function (data) {
             data = data[0];
             if (!_.isArray(data.Responses)) {
-                data.Responses = _.values(data.Responses);
+                data.Responses = _.values(data.Responses)
+                                  .map(function (d, i) {
+                                      d.randomProp = Math.random();
+                                      d.id = i;
+                                      return d;
+                                  });
             }
 
             this.setState({data: data});

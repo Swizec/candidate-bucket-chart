@@ -4,8 +4,8 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: [
-        'webpack-dev-server/client?http://localhost:3000',
-        'webpack/hot/only-dev-server',
+        //'webpack-dev-server/client?http://localhost:3000',
+        //'webpack/hot/only-dev-server',
         './src/main.jsx'
     ],
     output: {
@@ -14,7 +14,7 @@ module.exports = {
         publicPath: '/scripts/'
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
+       // new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin()
     ],
     module: {
@@ -30,8 +30,8 @@ module.exports = {
         extensions: ['', '.js', '.jsx']
     },
     externals: {
-        //"react": "React",
-        //"react/addons": "React",
+        "react": "React",
+        "react/addons": "React",
         "d3": "d3"
     },
     devtool: 'eval-source-map'

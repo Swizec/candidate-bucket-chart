@@ -96,7 +96,7 @@ var CandidateTooltip = React.createClass({
                            width={this.props.width}
                            height={this.props.height}
                            style={{display: this.props.shown ? "block" : "none"}}
-                           id={"tooltip-"+this.props.data.Candidate.nid}>
+                           id={"tooltip-"+this.props.data.id}>
                 <div>
                     <img src={candidate.Avatar} />
                     <div className="info">

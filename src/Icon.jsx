@@ -43,9 +43,15 @@ var Icon = React.createClass({
         var size = this.sizes[this.props.gender],
             transform = "translate("+(this.props.cx-size[0]/2)+", "+(this.props.cy-size[1]/2)+") scale("+this.props.r+")";
 
+        var icons = {
+            male: this.man_icon,
+            female: this.woman_icon,
+            none: this.none_icon
+        };
+
         return (
             <g transform={transform}>
-                {this.props.gender == "male" ? this.man_icon() : this.woman_icon()}
+                {icons[this.props.gender]()}
             </g>
         );
     }
