@@ -4,7 +4,7 @@ const React = require('react'),
       d3 = require('d3');
 
 const BubbleChart = require('./BubbleChart'),
-      Filters = require('./Filters');
+      Filters = require('./Filters/');
 
 const ApplicantsChart = React.createClass({
     mixins: [PureRenderMixin],
