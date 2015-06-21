@@ -128,9 +128,30 @@ var BubbleChart = React.createClass({
     },
 
     render: function () {
-        var median = d3.median(this.props.data.Responses.map(this.props.y_value)),
+        let median = d3.median(this.props.data.Responses.map(this.props.y_value)),
             passValue = this.state.passValue || median,
-            lineY = this.yScale(passValue);
+            lineY = this.yScale(passValue),
+            metaTools = null
+
+        if (this.props.data.Responses.length) {
+            metaTools = (
+                <g>
+                    <PassLine minY={this.props.margin.top}
+                              maxY={this.props.height-this.props.margin.bottom}
+                              passValue={passValue}
+                              y={lineY}
+                              updatePass={this.updatePass}
+                              margin={this.props.margin} />
+
+                    <BucketCounts data={this.props.data}
+                                  width={this.props.width}
+                                  height={this.props.height}
+                                  lineY={lineY}
+                                  y_value={this.props.y_value}
+                                  passValue={passValue} />
+                </g>
+            );
+        }
 
         return (
             <svg width={this.props.width}
@@ -155,20 +176,7 @@ var BubbleChart = React.createClass({
 
                     <Axis {...this.props} yScale={this.yScale}/>
 
-                    <PassLine minY={this.props.margin.top}
-                              maxY={this.props.height-this.props.margin.bottom}
-                              passValue={passValue}
-                              y={lineY}
-                              updatePass={this.updatePass}
-                              margin={this.props.margin} />
-
-                    <BucketCounts data={this.props.data}
-                                  width={this.props.width}
-                                  height={this.props.height}
-                                  lineY={lineY}
-                                  y_value={this.props.y_value}
-                                  passValue={passValue} />
-
+                    {metaTools}
             </svg>
         );
     }

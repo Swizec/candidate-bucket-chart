@@ -135,7 +135,8 @@ const Filters = React.createClass({
     render: function () {
         let status = null,
             BA_dropdown = null,
-            jobs_dropdown = null;
+            jobs_dropdown = null,
+            help = null
 
         if (this.state.loading) {
             status = (
@@ -167,8 +168,15 @@ const Filters = React.createClass({
             );
         }
 
+        if (!this.state.selectedBA || !this.state.selectedJob) {
+            help = (
+                <h2>Pick a business account and a job to see candidates</h2>
+            );
+        }
+
         return (
             <div>
+                {help}
                 {status}
                 <form className="form-inline">
                     {BA_dropdown}

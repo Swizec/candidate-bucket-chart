@@ -26,25 +26,25 @@ const ApplicantsChart = React.createClass({
     },
 
     render: function () {
-        if (!this.state.data) {
-            return (
-                <Filters urlRoot={this.props.urlRoot}
-                         returnData={this.updateData} />
-            );
-        }else if (this.state.data) {
-            let data = this.state.data;
+        let chart = null,
+            data = this.state.data;
 
-            return (
-                <div className="applicants-chart">
+        if (data) {
+            chart = (
+                <div>
                     <h2>{data.JobTitle} <small>{_.size(data.Responses)} candidates</small></h2>
                     <BubbleChart data={data} {... this.props} />
-                    <Filters urlRoot={this.props.urlRoot}
-                             returnData={this.updateData} />
                 </div>
             );
-        }else {
-            return (<Loading />);
         }
+
+        return (
+            <div className="applicants-chart">
+                {chart}
+                <Filters urlRoot={this.props.urlRoot}
+                         returnData={this.updateData} />
+            </div>
+        );
     }
 });
 
