@@ -115,7 +115,7 @@ const Filters = React.createClass({
                 data.Responses = data.Responses.filter(this.state.filter
                                                      || function () { return true; });
 
-                this.props.returnData(data);
+                this.props.returnData(data, this.state.data.Responses.length);
             }
         }
     },

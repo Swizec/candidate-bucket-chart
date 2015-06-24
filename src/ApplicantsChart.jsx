@@ -21,8 +21,9 @@ const ApplicantsChart = React.createClass({
         };
     },
 
-    updateData: function (data) {
-        this.setState({data: data});
+    updateData: function (data, N_all) {
+        this.setState({data: data,
+                       N_all: N_all});
     },
 
     render: function () {
@@ -32,7 +33,7 @@ const ApplicantsChart = React.createClass({
         if (data) {
             chart = (
                 <div>
-                    <h2>{data.JobTitle} <small>{_.size(data.Responses)} candidates</small></h2>
+                    <h2>{data.JobTitle} <small>{_.size(data.Responses)}/{this.state.N_all} candidates</small></h2>
                     <BubbleChart data={data} {... this.props} />
                 </div>
             );
