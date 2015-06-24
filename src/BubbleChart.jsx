@@ -65,7 +65,7 @@ var BubbleChart = React.createClass({
                 100
             ])
             .range([
-                props.height-this.props.margin.bottom,
+                props.height-props.margin.bottom,
                 props.margin.top
             ]);
 
@@ -89,6 +89,9 @@ var BubbleChart = React.createClass({
                 props.width-props.margin.right-props.max_r
             ]);
 
+        this.panExtent = {x: this.xScale.domain(),
+                          y: this.yScale.domain()};
+
         this.zoom
             .x(this.xScale)
             .y(this.yScale)
@@ -107,7 +110,38 @@ var BubbleChart = React.createClass({
             [1, this.props.max_r].map(function (v) {
                 return v*multiplier;
             }));
+
+        this.panLimit();
         this.forceUpdate();
+    },
+
+    panLimit: function () {
+        let panExtent = this.panExtent,
+            y = this.yScale,
+            x = this.xScale,
+            zoom = this.zoom,
+            height = this.props.height,
+            width = this.props.width;
+
+        // taken from http://bl.ocks.org/garrilla/11280861
+        var divisor = {h: height / ((y.domain()[1]-y.domain()[0])*zoom.scale()), w: width / ((x.domain()[1]-x.domain()[0])*zoom.scale())},
+	    minX = -(((x.domain()[0]-x.domain()[1])*zoom.scale())+(panExtent.x[1]-(panExtent.x[1]-(width/divisor.w)))),
+	    minY = -(((y.domain()[0]-y.domain()[1])*zoom.scale())+(panExtent.y[1]-(panExtent.y[1]-(height*(zoom.scale())/divisor.h))))*divisor.h,
+	    maxX = -(((x.domain()[0]-x.domain()[1]))+(panExtent.x[1]-panExtent.x[0]))*divisor.w*zoom.scale(),
+	    maxY = (((y.domain()[0]-y.domain()[1])*zoom.scale())+(panExtent.y[1]-panExtent.y[0]))*divisor.h*zoom.scale(),
+
+	    tx = x.domain()[0] < panExtent.x[0] ?
+		 minX :
+		 x.domain()[1] > panExtent.x[1] ?
+		 maxX :
+		 zoom.translate()[0],
+	    ty = y.domain()[0]  < panExtent.y[0]?
+		 minY :
+		 y.domain()[1] > panExtent.y[1] ?
+		 maxY :
+		 zoom.translate()[1];
+
+	this.zoom.translate([tx,ty]);
     },
 
     updatePass: function (y) {
