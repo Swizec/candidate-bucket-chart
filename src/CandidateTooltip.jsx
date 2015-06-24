@@ -51,7 +51,7 @@ var CandidateTooltip = React.createClass({
     componentWillUpdate: function (props) {
         if (props.shown) {
             var svg = this.getDOMNode().parentNode.parentNode,
-                top_id = d3.select(this.getDOMNode().parentNode).datum().id;
+                top_id = this.getDOMNode().id.replace(/tooltip/, "candidate");
 
             // sort this candidate on top of others
             d3.select(svg)
