@@ -40,14 +40,8 @@ var CandidateTooltip = React.createClass({
             y_offset = -props.height
         }
 
-        if (this.props.tellSize) {
-            this.props.tellSize({
-                x_offset: x_offset,
-                y_offset: y_offset,
-                width: props.width,
-                height: props.height
-            });
-        }
+        this.setState({x_offset: x_offset,
+                       y_offset: y_offset});
     },
 
     shouldComponentUpdate: function (nextProps, nextState) {
@@ -71,8 +65,8 @@ var CandidateTooltip = React.createClass({
 
         return (
             <foreignobject className="candidate-tooltip"
-                           x={this.props.x}
-                           y={this.props.y}
+                           x={this.props.x+this.state.x_offset}
+                           y={this.props.y+this.state.y_offset}
                            width={this.props.width}
                            height={this.props.height}
                            style={{display: this.state.shown ? "block" : "none"}}
