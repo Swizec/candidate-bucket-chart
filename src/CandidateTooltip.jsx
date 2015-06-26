@@ -21,10 +21,12 @@ var CandidateTooltip = React.createClass({
 
     componentWillMount: function () {
         this.calc_offsets(this.props);
+        this.setState({shown: this.props.shown});
     },
 
     componentWillReceiveProps: function (props) {
         this.calc_offsets(props);
+        this.setState({shown: props.shown});
     },
 
     calc_offsets: function (props) {
@@ -48,42 +50,20 @@ var CandidateTooltip = React.createClass({
         }
     },
 
-    componentWillUpdate: function (props) {
-        if (props.shown) {
-            var svg = this.getDOMNode().parentNode.parentNode,
-                top_id = this.getDOMNode().id.replace(/tooltip/, "candidate");
-
-            // sort this candidate on top of others
-            d3.select(svg)
-              .selectAll("g.candidate")
-              .sort(function (a, b) {
-                  if (a.id === top_id) {
-                      return +1;
-                  }else if (b.id === top_id) {
-                      return -1;
-                  }else{
-                      return 0;
-                  }
-              });
-
-            // sort passline under this candidate
-            // but implicitly on top of others
-            d3.select(svg)
-              .selectAll("g.pass-line, g#"+top_id)
-              .sort(function (a, b) {
-                  if (!a) return -1;
-                  if (!b) return 1;
-                  return 0;
-              });
-        }
-    },
-
     shouldComponentUpdate: function (nextProps, nextState) {
         return _.any([nextProps.width !== this.props.width,
                       nextProps.height !== this.props.height,
-                      nextProps.shown !== this.props.shown,
+                      nextState.shown !== this.state.shown,
                       !_.isEqual(nextProps.data, this.props.data)]);
 
+    },
+
+    toggle: function () {
+        this.setState({shown: !this.state.shown});
+    },
+
+    hide: function () {
+        this.setState({shown: false});
     },
 
     render: function () {
@@ -91,11 +71,11 @@ var CandidateTooltip = React.createClass({
 
         return (
             <foreignobject className="candidate-tooltip"
-                           x="0"
-                           y="0"
+                           x={this.props.x}
+                           y={this.props.y}
                            width={this.props.width}
                            height={this.props.height}
-                           style={{display: this.props.shown ? "block" : "none"}}
+                           style={{display: this.state.shown ? "block" : "none"}}
                            id={"tooltip-"+this.props.data.id}>
                 <div>
                     <img src={candidate.Photo} />

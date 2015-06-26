@@ -4,6 +4,7 @@ const React = require('react'),
       d3 = require('d3');
 
 const Candidate = require('./Candidate'),
+      CandidateTooltip = require('./CandidateTooltip'),
       PassLine = require('./PassLine'),
       BucketCounts = require('./BucketCounts'),
       Axis = require('./Axis');
@@ -155,17 +156,68 @@ var BubbleChart = React.createClass({
             var component = this.refs[key];
 
             if (!event.dispatchMarker.match(key)
-                    && component.hide_tooltip) {
-                component.hide_tooltip()
+                    && key.match(/^candidate-tooltip/)) {
+                component.hide();
             }
         }.bind(this));
+    },
+
+    toggle_tooltip: function (id) {
+        let tooltip = this.refs["candidate-tooltip-"+id];
+
+        tooltip.toggle();
+    },
+
+    __build_candidates: function (median) {
+        return (<g>
+            {this.props.data.Responses.map(function (d) {
+                var passed = this.props.y_value(d) > (this.state.passValue || median);
+
+                return (
+                    <Candidate x={this.xScale(this.props.x_value(d))}
+                               y={this.yScale(this.props.y_value(d))}
+                               r={this.rScale(this.props.r_value(d))}
+                               max_r={this.props.max_r}
+                               key={"candidate-"+d.id}
+                               data={d}
+                               maxX={this.props.width-this.props.margin.right}
+                               maxY={this.props.height-this.props.margin.bottom}
+                               minX={this.props.margin.left}
+                               minY={this.props.margin.top}
+                               passed={passed}
+                               ref={"candidate-"+d.id}
+                               toggle_tooltip={this.toggle_tooltip} />
+                );
+            }, this)}
+            </g>);
+    },
+
+    __build_tooltips: function () {
+        return (
+            <g>
+                {this.props.data.Responses.map(function (d) {
+                    return (
+                        <CandidateTooltip
+                        x={this.xScale(this.props.x_value(d))}
+                        y={this.yScale(this.props.y_value(d))}
+                        maxX={this.props.width-this.props.margin.right}
+                        maxY={this.props.height-this.props.margin.bottom}
+                        minX={this.props.margin.left}
+                        minY={this.props.margin.top}
+                        key={"candidate-tooltip-"+d.id}
+                        ref={"candidate-tooltip-"+d.id}
+                        shown={false}
+                        data={d} />
+                    );
+                 }, this)}
+            </g>);
     },
 
     render: function () {
         let median = d3.median(this.props.data.Responses.map(this.props.y_value)),
             passValue = this.state.passValue || median,
             lineY = this.yScale(passValue),
-            metaTools = null
+            metaTools = null;
 
         if (this.props.data.Responses.length) {
             metaTools = (
@@ -187,32 +239,19 @@ var BubbleChart = React.createClass({
             );
         }
 
+        let candidates = this.__build_candidates(median),
+            tooltips = this.__build_tooltips();
+
         return (
             <svg width={this.props.width}
                  height={this.props.height}
                  onMouseDown={this.hide_tooltips}>
-                {this.props.data.Responses.map(function (d) {
-                    var passed = this.props.y_value(d) > (this.state.passValue || median);
+            {candidates}
+            <Axis {...this.props} yScale={this.yScale}/>
 
-                    return (
-                        <Candidate x={this.xScale(this.props.x_value(d))}
-                        y={this.yScale(this.props.y_value(d))}
-                        r={this.rScale(this.props.r_value(d))}
-                        max_r={this.props.max_r}
-                        key={"candidate-"+d.id}
-                        data={d}
-                        maxX={this.props.width-this.props.margin.right}
-                        maxY={this.props.heigh-this.props.margin.bottom}
-                        minX={this.props.margin.left}
-                        minY={this.props.margin.top}
-                        passed={passed}
-                        ref={"candidate-"+d.id} />
-                    );
-                 }.bind(this))}
+            {metaTools}
 
-                        <Axis {...this.props} yScale={this.yScale}/>
-
-                        {metaTools}
+            {tooltips}
             </svg>
         );
     }

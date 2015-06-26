@@ -10,33 +10,14 @@ var Candidate = React.createClass({
     mixins: [PureRenderMixin],
 
     getInitialState: function () {
-        return {tooltip_shown: false,
-                width: 12,
+        return {width: 12,
                 height: 12,
                 y_offset: 0,
                 x_offset: 0};
     },
 
     toggle_tooltip: function () {
-        if (this.state.tooltip_shown) {
-            this.hide_tooltip();
-        }else{
-            this.show_tooltip();
-        }
-    },
-
-    show_tooltip: function () {
-        this.setState({tooltip_shown: true});
-    },
-
-    hide_tooltip: function () {
-        this.setState({tooltip_shown: false,
-                       x_offset: 0,
-                       y_offset: 0});
-    },
-
-    fixSize: function (info) {
-        this.setState(info);
+        this.props.toggle_tooltip(this.props.data.id);
     },
 
     componentDidMount: function () {
@@ -76,11 +57,6 @@ var Candidate = React.createClass({
                       r={this.props.r/this.props.max_r}
                       gender={gender}
                       />
-
-                <CandidateTooltip
-                        shown={this.state.tooltip_shown}
-                        tellSize={this.fixSize}
-                        {... this.props} />
             </g>
         );
     }
