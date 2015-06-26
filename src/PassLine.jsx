@@ -64,6 +64,12 @@ var PassLine = React.createClass({
     },
 
     render: function () {
+        let text_x = "100%";
+
+        if (this.state.y < 133 || this.state.y > this.props.maxY-113) {
+            text_x = this.props.width-40;
+        }
+
         return (
             <g onMouseDown={this.startDrag}
                onMouseMove={this.drag}
@@ -76,12 +82,12 @@ var PassLine = React.createClass({
                       x2="100%" y2={this.state.y-1}
                       style={{stroke: "black", strokeWidth: 1.5, opacity: .8}} />
 
-            <text x="100%" y={this.state.y-4} textAnchor="end"
-                  transform="translate(-22, 0)">
+                <text x={text_x} y={this.state.y-4} textAnchor="end"
+                      transform="translate(-22, 0)">
                     Score:
                 </text>
 
-                <text x="100%" y={this.state.y-4} textAnchor="end" className="text-big">
+                <text x={text_x} y={this.state.y-4} textAnchor="end" className="text-big">
                     {Math.round(this.props.passValue)}
                 </text>
 

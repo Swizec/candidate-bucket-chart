@@ -224,6 +224,7 @@ var BubbleChart = React.createClass({
                 <g>
                     <PassLine minY={this.props.margin.top}
                               maxY={this.props.height-this.props.margin.bottom}
+                              width={this.props.width}
                               passValue={passValue}
                               y={lineY}
                               updatePass={this.updatePass}
