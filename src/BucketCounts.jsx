@@ -14,18 +14,31 @@ const BucketCounts = React.createClass({
 
         return (
             <g className="bucket-sizes">
-                <text textAnchor="center"
-                      transform={"rotate(90) translate("+(lineY/2)+", "+(-this.props.width+50)+")"}
-                      className="pass">
+                <g transform={"rotate(90) translate("+(lineY/2)+", "+(-this.props.width+12)+")"}>
+                    <text textAnchor="center"
+                          className="pass">
+                        {Npassed}
+                    </text>
+                    <text textAnchor="center"
+                          y="18"
+                          x="-30"
+                          className="pass">
+                        candidates
+                    </text>
+                </g>
 
-                    {Npassed}
-                </text>
-
-                <text textAnchor="center"
-                      transform={"rotate(90) translate("+(lineY+(this.props.height-lineY)/2)+", "+(-this.props.width+60)+")"}
-                      className="no-pass">
-                    {Nfail}
-                </text>
+                <g transform={"rotate(90) translate("+(lineY+(this.props.height-lineY)/2)+", "+(-this.props.width+12)+")"}>
+                    <text textAnchor="center"
+                          className="no-pass">
+                        {Nfail}
+                    </text>
+                    <text textAnchor="center"
+                          y="18"
+                          x="-30"
+                          className="no-pass">
+                        candidates
+                    </text>
+                </g>
             </g>
         );
     }
