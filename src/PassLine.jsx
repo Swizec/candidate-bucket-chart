@@ -35,14 +35,16 @@ var PassLine = React.createClass({
     drag: function (event) {
         event.stopPropagation();
 
-        if (!this.state.isDragging
-         || this.state.y < this.props.minY && event.clientY < this.state.y
-         || this.state.y > this.props.maxY && event.clientY > this.state.y) {
-            return;
-        }
+        if (!this.state.isDragging) return;
 
         var dy = event.clientY - this.state.prev_y,
             y = this.state.y + dy;
+
+        if (y < this.props.minY) {
+            y = this.props.minY;
+        }else if (y > this.props.maxY) {
+            y = this.props.maxY;
+        }
 
         this.setState({
             y: y,
