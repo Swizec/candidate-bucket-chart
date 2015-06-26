@@ -32,11 +32,7 @@ var Icon = React.createClass({
     },
 
     none_icon: function () {
-        return (
-            <g>
-                <circle cx="0" cy="0" r="5" />
-            </g>
-        );
+        return this.man_icon();
     },
 
     render: function () {

@@ -6,7 +6,7 @@
 
     .candidate {
 
-        path, circle {
+        path {
             stroke-width: 1;
             cursor: pointer;
         }
@@ -21,17 +21,17 @@
             fill: #779ecb;
         }
 
-        &.none circle {
+        &.none path {
             stroke: #cfcfc4;
             fill: #cfcfc4;
         }
 
-        &.passed path, &.passed circle {
+        &.passed path {
             stroke-opacity: 1;
             fill-opacity: .6;
         }
 
-        &.no-passed path, &.no-passed circle {
+        &.no-passed path {
             stroke-opacity: .5;
             fill-opacity: .2;
         }
