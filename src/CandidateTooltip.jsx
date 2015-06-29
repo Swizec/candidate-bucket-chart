@@ -43,7 +43,6 @@ var CandidateTooltip = React.createClass({
         this.setState({x_offset: x_offset,
                        y_offset: y_offset});
     },
-
     shouldComponentUpdate: function (nextProps, nextState) {
         return _.any([nextProps.width !== this.props.width,
                       nextProps.height !== this.props.height,
@@ -60,29 +59,54 @@ var CandidateTooltip = React.createClass({
         this.setState({shown: false});
     },
 
+    //style={{display: this.state.shown ? "block" : "none"}}
+
     render: function () {
-        var candidate = this.props.data.Candidate;
+        var candidate = this.props.data.Candidate,
+            x = this.props.x+this.state.x_offset,
+            y = this.props.y+this.state.y_offset,
+            transform = "translate("+x+","+y+")";
 
         return (
-            <foreignobject className="candidate-tooltip"
-                           x={this.props.x+this.state.x_offset}
-                           y={this.props.y+this.state.y_offset}
-                           width={this.props.width}
-                           height={this.props.height}
-                           style={{display: this.state.shown ? "block" : "none"}}
-                           id={"tooltip-"+this.props.data.id}>
-                <div>
-                    <img src={candidate.Photo} />
-                    <div className="info">
-                        <a href="#"><strong>{candidate.Name}</strong></a> <br />
-                        {candidate.CurrentJobTitle} <br />
-                        From <em>{candidate.Location}</em><br />
+            <g transform={transform}
+               style={{visibility: this.state.shown ? "visible" : "hidden"}}>
+                <foreignobject className="candidate-tooltip"
+                               width={this.props.width}
+                               height={this.props.height}
+                               id={"tooltip-"+this.props.data.id}>
+                    <div>
+                        <img src={candidate.Photo} />
+                        <div className="info">
+                            <strong>{candidate.Name}</strong><br />
+                            {candidate.currentJobTitle} <br />
+                            From <em>{candidate.Location}</em><br />
+                        </div>
+                        <Stars score={this.props.data.StarRating} />
+                        <strong className="score">{this.props.data.OverallScore}</strong>
                     </div>
-                    <Stars score={this.props.data.StarRating} />
-                    <strong className="score">{this.props.data.OverallScore}</strong>
-                </div>
-            </foreignobject>
+                </foreignobject>
+            </g>
         );
+        /* return (
+           <foreignobject className="candidate-tooltip"
+           x={this.props.x+this.state.x_offset}
+           y={this.props.y+this.state.y_offset}
+           width={this.props.width}
+           height={this.props.height}
+
+           id={"tooltip-"+this.props.data.id}>
+           <div>
+           <img src={candidate.Photo} />
+           <div className="info">
+           <a href="#"><strong>{candidate.Name}</strong></a> <br />
+           {candidate.CurrentJobTitle} <br />
+           From <em>{candidate.Location}</em><br />
+           </div>
+           <Stars score={this.props.data.StarRating} />
+           <strong className="score">{this.props.data.OverallScore}</strong>
+           </div>
+           </foreignobject>
+           ); */
     }
 });
 
