@@ -248,12 +248,23 @@ var BubbleChart = React.createClass({
             <svg width={this.props.width}
                  height={this.props.height}
                  onMouseDown={this.hide_tooltips}>
-            {candidates}
-            <Axis {...this.props} yScale={this.yScale}/>
+                {candidates}
 
-            {metaTools}
+                <Axis {...this.props} yScale={this.yScale}/>
+                <line className="line"
+                      x1={this.props.margin.left}
+                      y1={this.props.height-this.props.margin.bottom}
+                      x2={this.props.width-this.props.margin.right+10}
+                      y2={this.props.height-this.props.margin.bottom} />
+                <line className="line"
+                      x1={this.props.width-this.props.margin.right+10}
+                      y1={this.props.margin.top}
+                      x2={this.props.width-this.props.margin.right+10}
+                      y2={this.props.height-this.props.margin.bottom} />
 
-            {tooltips}
+                {metaTools}
+
+                {tooltips}
             </svg>
         );
     }
