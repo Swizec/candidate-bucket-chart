@@ -163,11 +163,7 @@ var BubbleChart = React.createClass({
     },
 
     toggle_tooltip: function (id) {
-        console.log("trying to toggle", id);
         let tooltip = this.refs["candidate-tooltip-"+id];
-
-        console.log("found", tooltip);
-        console.log("node", tooltip.getDOMNode());
 
         tooltip.toggle();
     },

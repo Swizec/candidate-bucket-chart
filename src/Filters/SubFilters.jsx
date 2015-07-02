@@ -12,7 +12,8 @@ const SubFilters = React.createClass({
         return {education: null,
                 gender: null,
                 filters: {education: function (d) { return true; },
-                          gender: function (d) { return true; }}};
+                          gender: function (d) { return true; },
+                          source: function (d) { return true; }}};
     },
 
     get_educations: function () {
@@ -83,13 +84,49 @@ const SubFilters = React.createClass({
                        filters: filters});
     },
 
+    get_sources: function () {
+        var data = this.props.data.Responses;
+
+        return [{value: "__reset_filter__",
+                 label: "All"}].concat(
+                     _.uniq(data,
+                            function (d) { return d.Candidate.Source; }
+                     )
+                      .map(function (d) {
+                          return {value: d.Candidate.Source,
+                                  label: d.Candidate.Source};
+                      }));
+    },
+
+    picked_source: function () {
+        var source = event.target.value,
+            filter;
+
+        if (!source) {
+            filter = function (d) { return !d.Candidate.Source; };
+        }else if (source != "__reset_filter__") {
+            filter = function (d) { return d.Candidate.Source == source; };
+        }else{
+            filter = function () { return true; };
+        }
+
+        var filters = this.state.filters;
+        filters.source = filter;
+
+        this.setState({source: source,
+                       filters: filters});
+    },
+
+
     componentWillUpdate: function (nextProps, nextState) {
         var education = nextState.filters.education,
-            gender = nextState.filters.gender;
+            gender = nextState.filters.gender,
+            source = nextState.filters.source;
 
         this.props.updateFilter(function (d) {
             return _.all([education(d),
-                          gender(d)]);
+                          gender(d),
+                          source(d)]);
         }.bind(this));
     },
 
@@ -107,6 +144,12 @@ const SubFilters = React.createClass({
                               label="Gender"
                               name="gender"
                               selected={this.state.gender} />
+
+                    <Dropdown options={this.get_sources()}
+                              onChange={this.picked_source}
+                              label="Candidate Source"
+                              name="serce"
+                              selected={this.state.source} />
             </div>
         );
     }
