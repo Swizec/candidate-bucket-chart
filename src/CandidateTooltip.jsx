@@ -77,7 +77,7 @@ var CandidateTooltip = React.createClass({
                     <div>
                         <img src={candidate.Photo} />
                         <div className="info">
-                            <strong>{candidate.Name}</strong><br />
+                            <strong><a href={"/node/"+candidate.nid}>{candidate.Name}</a></strong><br />
                             {candidate.currentJobTitle} <br />
                             From <em>{candidate.Location}</em><br />
                         </div>
@@ -87,26 +87,6 @@ var CandidateTooltip = React.createClass({
                 </foreignobject>
             </g>
         );
-        /* return (
-           <foreignobject className="candidate-tooltip"
-           x={this.props.x+this.state.x_offset}
-           y={this.props.y+this.state.y_offset}
-           width={this.props.width}
-           height={this.props.height}
-
-           id={"tooltip-"+this.props.data.id}>
-           <div>
-           <img src={candidate.Photo} />
-           <div className="info">
-           <a href="#"><strong>{candidate.Name}</strong></a> <br />
-           {candidate.CurrentJobTitle} <br />
-           From <em>{candidate.Location}</em><br />
-           </div>
-           <Stars score={this.props.data.StarRating} />
-           <strong className="score">{this.props.data.OverallScore}</strong>
-           </div>
-           </foreignobject>
-           ); */
     }
 });
 
