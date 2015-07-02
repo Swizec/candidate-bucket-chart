@@ -66,10 +66,6 @@ var PassLine = React.createClass({
     render: function () {
         let text_x = "100%";
 
-        if (this.state.y < 133 || this.state.y > this.props.maxY-113) {
-            text_x = this.props.width-40;
-        }
-
         return (
             <g onMouseDown={this.startDrag}
                onMouseMove={this.drag}

@@ -28,7 +28,7 @@ var BubbleChart = React.createClass({
                 top: 10,
                 bottom: 10,
                 left: 25,
-                right: 65
+                right: 110
             }
         };
     },
@@ -232,6 +232,7 @@ var BubbleChart = React.createClass({
 
                     <BucketCounts data={this.props.data}
                                   width={this.props.width}
+                                  margin={this.props.margin}
                                   height={this.props.height}
                                   lineY={lineY}
                                   y_value={this.props.y_value}
