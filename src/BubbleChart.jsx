@@ -43,9 +43,9 @@ var BubbleChart = React.createClass({
         this.yScale = d3.scale.linear();
         this.xScale = d3.scale.linear();
         this.rScale = d3.scale.linear();
-        this.zoomScaleMultiplier = d3.scale.linear()
+        this.zoomScaleMultiplier = d3.scale.log()
                                      .domain([1, 8])
-                                     .range([1, 1.6]);
+                                     .range([1, 3]);
         this.zoom = d3.behavior.zoom()
                       .x(this.xScale)
                       .y(this.yScale)
