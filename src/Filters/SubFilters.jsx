@@ -16,17 +16,15 @@ const SubFilters = React.createClass({
                           source: function (d) { return true; }}};
     },
 
-    get_educations: function () {
+    get_values: function (field) {
         var data = this.props.data.Responses;
 
         return [{value: "__reset_filter__",
                  label: "All"}].concat(
-                     _.uniq(data,
-                            function (d) { return d.Candidate.EducationLevel; }
-                     )
+                     _.uniq(data, function (d) { return d.Candidate[field]; })
                       .map(function (d) {
-                          return {value: d.Candidate.EducationLevel,
-                                  label: d.Candidate.EducationLevel};
+                          return {value: d.Candidate[field] || "null",
+                                  label: d.Candidate[field] || "(empty)"};
                       }));
     },
 
@@ -34,7 +32,7 @@ const SubFilters = React.createClass({
         var education = event.target.value,
             filter;
 
-        if (!education) {
+        if (!education || education == "null") {
             filter = function (d) { return !d.Candidate.EducationLevel; }
         }else if (education != "__reset_filter__") {
             filter = function (d) {
@@ -51,25 +49,11 @@ const SubFilters = React.createClass({
                        filters: filters});
     },
 
-    get_genders: function () {
-        var data = this.props.data.Responses;
-
-        return [{value: "__reset_filter__",
-                 label: "All"}].concat(
-                     _.uniq(data,
-                            function (d) { return d.Candidate.Gender; }
-                     )
-                      .map(function (d) {
-                          return {value: d.Candidate.Gender,
-                                  label: d.Candidate.Gender};
-                      }));
-    },
-
     picked_gender: function () {
         var gender = event.target.value,
             filter;
 
-        if (!gender) {
+        if (!gender || gender == "null") {
             filter = function (d) { return !d.Candidate.Gender; };
         }else if (gender != "__reset_filter__") {
             filter = function (d) { return d.Candidate.Gender == gender; };
@@ -84,25 +68,11 @@ const SubFilters = React.createClass({
                        filters: filters});
     },
 
-    get_sources: function () {
-        var data = this.props.data.Responses;
-
-        return [{value: "__reset_filter__",
-                 label: "All"}].concat(
-                     _.uniq(data,
-                            function (d) { return d.Candidate.Source; }
-                     )
-                      .map(function (d) {
-                          return {value: d.Candidate.Source,
-                                  label: d.Candidate.Source};
-                      }));
-    },
-
     picked_source: function () {
         var source = event.target.value,
             filter;
 
-        if (!source) {
+        if (!source || source == "null") {
             filter = function (d) { return !d.Candidate.Source; };
         }else if (source != "__reset_filter__") {
             filter = function (d) { return d.Candidate.Source == source; };
@@ -133,19 +103,19 @@ const SubFilters = React.createClass({
     render: function () {
         return (
             <div className="form-group">
-                    <Dropdown options={this.get_educations()}
+                    <Dropdown options={this.get_values('EducationLevel')}
                               onChange={this.picked_education}
                               label="Education level"
                               name="education"
                               selected={this.state.education} />
 
-                    <Dropdown options={this.get_genders()}
+                    <Dropdown options={this.get_values('Gender')}
                               onChange={this.picked_gender}
                               label="Gender"
                               name="gender"
                               selected={this.state.gender} />
 
-                    <Dropdown options={this.get_sources()}
+                    <Dropdown options={this.get_values('Source')}
                               onChange={this.picked_source}
                               label="Candidate Source"
                               name="serce"
