@@ -13,7 +13,8 @@ const SubFilters = React.createClass({
                 gender: null,
                 filters: {education: function (d) { return true; },
                           gender: function (d) { return true; },
-                          source: function (d) { return true; }}};
+                          source: function (d) { return true; },
+                          reviewer: function (d) { return true; }}};
     },
 
     get_values: function (field) {
@@ -28,65 +29,42 @@ const SubFilters = React.createClass({
                       }));
     },
 
-    picked_education: function () {
-        var education = event.target.value,
-            filter;
 
-        if (!education || education == "null") {
-            filter = function (d) { return !d.Candidate.EducationLevel; }
-        }else if (education != "__reset_filter__") {
-            filter = function (d) {
-                return d.Candidate.EducationLevel == education;
-            };
+    picked_value: function (data_key, local_key, value) {
+        var filter;
+
+        if (!value || value == "null") {
+            filter = function (d) { return !d.Candidate[data_key]; };
+        }else if (value != "__reset_filter__") {
+            filter = function (d) { return d.Candidate[data_key] == value; };
         }else{
             filter = function () { return true; };
         }
 
         var filters = this.state.filters;
-        filters.education = filter;
+        filters[local_key] = filter;
 
-        this.setState({education: education,
-                       filters: filters});
+        var change = {filters: filters};
+        change[local_key] = value;
+
+        this.setState(change);
+    },
+
+    picked_education: function () {
+        this.picked_value('EducationLevel', 'education', event.target.value);
     },
 
     picked_gender: function () {
-        var gender = event.target.value,
-            filter;
-
-        if (!gender || gender == "null") {
-            filter = function (d) { return !d.Candidate.Gender; };
-        }else if (gender != "__reset_filter__") {
-            filter = function (d) { return d.Candidate.Gender == gender; };
-        }else{
-            filter = function () { return true; };
-        }
-
-        var filters = this.state.filters;
-        filters.gender = filter;
-
-        this.setState({gender: gender,
-                       filters: filters});
+        this.picked_value('Gender', 'gender', event.target.value);
     },
 
     picked_source: function () {
-        var source = event.target.value,
-            filter;
-
-        if (!source || source == "null") {
-            filter = function (d) { return !d.Candidate.Source; };
-        }else if (source != "__reset_filter__") {
-            filter = function (d) { return d.Candidate.Source == source; };
-        }else{
-            filter = function () { return true; };
-        }
-
-        var filters = this.state.filters;
-        filters.source = filter;
-
-        this.setState({source: source,
-                       filters: filters});
+        this.picked_value('Source', 'source', event.target.value);
     },
 
+    picked_reviewer: function () {
+        this.picked_value('Reviewer', 'reviewer', event.target.value);
+    },
 
     componentWillUpdate: function (nextProps, nextState) {
         var education = nextState.filters.education,
@@ -118,8 +96,15 @@ const SubFilters = React.createClass({
                     <Dropdown options={this.get_values('Source')}
                               onChange={this.picked_source}
                               label="Candidate Source"
-                              name="serce"
+                              name="source"
                               selected={this.state.source} />
+
+                    <Dropdown options={this.get_values('Reviewer')}
+                              onChange={this.picked_reviewer}
+                              label="Reviewer"
+                              name="reviewer"
+                              selected={this.state.reviewer} />
+
             </div>
         );
     }
