@@ -8,7 +8,7 @@ const Dropdown = React.createClass({
                 <label htmlFor={"dropdown-"+this.props.name}>{this.props.label}: </label>
                 <select name={this.props.name} id={"dropdown-"+this.props.name}
                         onChange={this.props.onChange}
-                        value={this.props.selected}>
+                        value={this.props.selected || "null"}>
                     {this.props.options.map(function (option) {
                         return (
                             <option value={option.value}

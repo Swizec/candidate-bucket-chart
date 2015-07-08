@@ -61,23 +61,31 @@ const Filters = React.createClass({
     changeBusinessAccount: function (event) {
         let account_id = event.currentTarget.value;
 
-        this.setState({selectedBA: account_id});
-
         if (account_id == "null") {
-            this.setState({jobs: null});
+            account_id = null;
         }
+
+        this.setState({selectedBA: account_id,
+                       selectedType: null,
+                       selectedJob: null,
+                       jobs: null,
+                       data: null});
     },
 
     changeType: function (event) {
         let type = event.currentTarget.value;
 
-        this.setState({selectedType: type});
+        if (type == "null") {
+            type = null;
+        }
+
+        this.setState({selectedType: type,
+                       selectedJob: null,
+                       jobs: null,
+                       data: null});
 
         if (type != "null") {
             this.fetchList(type);
-        }else{
-            this.setState({jobs: null,
-                           data: null});
         }
     },
 
@@ -101,7 +109,12 @@ const Filters = React.createClass({
     changeJob: function (event) {
         let job_id = event.currentTarget.value;
 
-        this.setState({selectedJob: job_id});
+        if (job_id == "null") {
+            job_id = null;
+        }
+
+        this.setState({selectedJob: job_id,
+                       data: null});
 
         if (job_id != "null") {
             this.fetchData(job_id);
