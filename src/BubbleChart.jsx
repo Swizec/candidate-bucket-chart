@@ -34,8 +34,21 @@ var BubbleChart = React.createClass({
     },
 
     getInitialState: function () {
+        let median = d3.median(this.props.data.map(this.props.y_value)),
+            N_above = this.props.data.filter(
+                function (d) {
+                    return this.props.y_value(d) > median;
+                }.bind(this)).length,
+            N_below = this.props.data.filter(
+                function (d) {
+                    return this.props.y_value(d) < median;
+                }.bind(this)).length;
+
+        this.props.updatePassValue(median, N_above, N_below);
+
+
         return {
-            passValue: 0
+            passValue: median
         };
     },
 
@@ -146,9 +159,19 @@ var BubbleChart = React.createClass({
     },
 
     updatePass: function (y) {
-        var value = d3.round(this.yScale.invert(y));
+        var value = d3.round(this.yScale.invert(y)),
+            N_above = this.props.data.filter(
+                function (d) {
+                    return this.props.y_value(d) > value;
+                }.bind(this)).length,
+            N_below = this.props.data.filter(
+                function (d) {
+                    return this.props.y_value(d) < value;
+                }.bind(this)).length;
+
 
         this.setState({passValue: value});
+        this.props.updatePassValue(value, N_above, N_below);
     },
 
     hide_tooltips: function (event) {
@@ -215,7 +238,7 @@ var BubbleChart = React.createClass({
 
     render: function () {
         let median = d3.median(this.props.data.map(this.props.y_value)),
-            passValue = this.state.passValue || median,
+            passValue = this.state.passValue,
             lineY = this.yScale(passValue),
             metaTools = null;
 

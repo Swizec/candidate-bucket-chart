@@ -27,9 +27,16 @@ const ApplicantsChart = React.createClass({
                        caption: caption});
     },
 
+    updatePassValue: function (value, N_above, N_below) {
+        this.setState({passValue: value,
+                       N_above: N_above,
+                       N_below: N_below});
+    },
+
     render: function () {
         let chart = null,
-            data = this.state.data;
+            data = this.state.data,
+            moreInfo = null;
 
         if (data) {
             let flatData = data.reduce(function (mem, d) {
@@ -39,7 +46,19 @@ const ApplicantsChart = React.createClass({
             chart = (
                 <div>
                     <h2>{this.state.caption} <small>{flatData.length}/{this.state.N_all} candidates</small></h2>
-                    <BubbleChart data={flatData} {... this.props} />
+                    <BubbleChart data={flatData}
+                                 updatePassValue={this.updatePassValue}
+                                 {... this.props} />
+                </div>
+            );
+
+            moreInfo = (
+                <div className="metaData">
+                    <p>Total candidates: <b>{this.state.N_all}</b></p>
+                    <p>Candidates matching criteria: <b>{flatData.length}</b></p>
+                    <p>Score line: <b>{this.state.passValue}</b></p>
+                    <p>Above the line: <b>{this.state.N_above}</b> candidates</p>
+                    <p>Below the line: <b>{this.state.N_below}</b> candidates</p>
                 </div>
             );
         }
@@ -49,6 +68,7 @@ const ApplicantsChart = React.createClass({
                 {chart}
                 <Filters urlRoot={this.props.urlRoot}
                          returnData={this.updateData} />
+                {moreInfo}
             </div>
         );
     }
