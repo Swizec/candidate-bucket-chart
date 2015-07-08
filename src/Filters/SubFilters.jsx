@@ -9,8 +9,10 @@ const SubFilters = React.createClass({
     mixins: [PureRenderMixin],
 
     getInitialState: function () {
-        return {education: null,
-                gender: null,
+        return {education: "__reset_filter__",
+                gender: "__reset_filter__",
+                source: "__reset_filter__",
+                reviewer: "__reset_filter__",
                 filters: {education: function (d) { return true; },
                           gender: function (d) { return true; },
                           source: function (d) { return true; },
@@ -18,7 +20,7 @@ const SubFilters = React.createClass({
     },
 
     get_values: function (field) {
-        var data = this.props.data.Responses;
+        var data = this.props.data;
 
         return [{value: "__reset_filter__",
                  label: "All"}].concat(
@@ -69,12 +71,14 @@ const SubFilters = React.createClass({
     componentWillUpdate: function (nextProps, nextState) {
         var education = nextState.filters.education,
             gender = nextState.filters.gender,
-            source = nextState.filters.source;
+            source = nextState.filters.source,
+            reviewer = nextState.filters.reviewer;
 
         this.props.updateFilter(function (d) {
             return _.all([education(d),
                           gender(d),
-                          source(d)]);
+                          source(d),
+                          reviewer(d)]);
         }.bind(this));
     },
 

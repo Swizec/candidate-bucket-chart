@@ -140,7 +140,13 @@ const Filters = React.createClass({
                 return data;
             }, this);
 
-            this.setState({data: data});
+            let flatData = data.reduce(function (mem, d) {
+                return mem.concat(d.Responses);
+            }, []);
+
+
+            this.setState({data: data,
+                           flatData: flatData});
         }.bind(this));
     },
 
@@ -226,7 +232,7 @@ const Filters = React.createClass({
         if (this.state.data) {
             subfilters = (
                 <SubFilters updateFilter={this.updateFilter}
-                            data={this.state.data} />
+                            data={this.state.flatData} />
             );
         }
 
