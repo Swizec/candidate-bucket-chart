@@ -72,8 +72,8 @@ var BubbleChart = React.createClass({
 
         this.rScale
             .domain([
-                d3.min(props.data.Responses.map(props.r_value)),
-                d3.max(props.data.Responses.map(props.r_value))
+                d3.min(props.data.map(props.r_value)),
+                d3.max(props.data.map(props.r_value))
             ])
             .range([
                 1,
@@ -82,8 +82,8 @@ var BubbleChart = React.createClass({
 
         this.xScale
             .domain([
-                d3.min(props.data.Responses.map(props.x_value)),
-                d3.max(props.data.Responses.map(props.x_value))
+                d3.min(props.data.map(props.x_value)),
+                d3.max(props.data.map(props.x_value))
             ])
             .range([
                 props.margin.left+props.max_r,
@@ -170,7 +170,7 @@ var BubbleChart = React.createClass({
 
     __build_candidates: function (median) {
         return (<g>
-            {this.props.data.Responses.map(function (d) {
+            {this.props.data.map(function (d) {
                 var passed = this.props.y_value(d) > (this.state.passValue || median);
 
                 return (
@@ -195,7 +195,7 @@ var BubbleChart = React.createClass({
     __build_tooltips: function () {
         return (
             <g>
-                {this.props.data.Responses.map(function (d) {
+                {this.props.data.map(function (d) {
                     return (
                         <CandidateTooltip
                         x={this.xScale(this.props.x_value(d))}
@@ -214,12 +214,12 @@ var BubbleChart = React.createClass({
     },
 
     render: function () {
-        let median = d3.median(this.props.data.Responses.map(this.props.y_value)),
+        let median = d3.median(this.props.data.map(this.props.y_value)),
             passValue = this.state.passValue || median,
             lineY = this.yScale(passValue),
             metaTools = null;
 
-        if (this.props.data.Responses.length) {
+        if (this.props.data.length) {
             metaTools = (
                 <g>
                     <PassLine minY={this.props.margin.top}

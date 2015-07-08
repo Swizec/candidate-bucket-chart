@@ -7,11 +7,21 @@ const Error = require('./Error'),
       Dropdown = require('./Dropdown'),
       SubFilters = require('./SubFilters');
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 const Filters = React.createClass({
     mixins: [PureRenderMixin],
 
     getInitialState: function () {
-        return {loading: true};
+        return {loading: true,
+                types: [{value: "null",
+                         label: "Pick type"},
+                        {value: "client",
+                         label: "Client"},
+                        {value: "job",
+                         label: "Job"}]};
     },
 
     componentDidMount: function () {
@@ -53,22 +63,36 @@ const Filters = React.createClass({
 
         this.setState({selectedBA: account_id});
 
-        if (account_id != "null") {
-            this.fetchJobs(account_id);
-        }else{
+        if (account_id == "null") {
             this.setState({jobs: null});
         }
     },
 
-    fetchJobs: function (account_id) {
-        this.__fetch("reports/"+account_id, function (data) {
+    changeType: function (event) {
+        let type = event.currentTarget.value;
+
+        this.setState({selectedType: type});
+
+        if (type != "null") {
+            this.fetchList(type);
+        }else{
+            this.setState({jobs: null,
+                           data: null});
+        }
+    },
+
+    fetchList: function (type) {
+        let account_id = this.state.selectedBA,
+            label = type == "job" ? "Pick job" : "Pick client";
+
+        this.__fetch("reports/"+account_id+"/"+type, function (data) {
             this.setState({selectedJob: null,
                            jobs:
                            [{value: "null",
-                             label: "Pick job"}].concat(
+                             label: label}].concat(
                                  data.map(function (d) {
-                                     return {value: d.JobId,
-                                             label: d.JobTitle};
+                                     return {value: d.nid,
+                                             label: d.title};
                                  }))
             });
         }.bind(this));
@@ -80,23 +104,28 @@ const Filters = React.createClass({
         this.setState({selectedJob: job_id});
 
         if (job_id != "null") {
-            this.fetchData(this.state.selectedBA, job_id);
+            this.fetchData(job_id);
         }else{
             this.setState({selectedJob: null});
         }
     },
 
-    fetchData: function (account_id, job_id) {
-        this.__fetch("reports/"+account_id+"/"+job_id, function (data) {
-            data = data[0];
-            if (!_.isArray(data.Responses)) {
-                data.Responses = _.values(data.Responses)
-                                  .map(function (d, i) {
-                                      d.randomProp = Math.random();
-                                      d.id = i;
-                                      return d;
-                                  });
-            }
+    fetchData: function (job_id) {
+        let account_id = this.state.selectedBA,
+            type = this.state.selectedType;
+
+        this.__fetch(["reports", account_id, type, job_id].join("/"), function (data) {
+            data = data.map(function (data) {
+                if (!_.isArray(data.Responses)) {
+                    data.Responses = _.values(data.Responses);
+                }
+                data.Responses = data.Responses.map(function (d, i) {
+                    d.randomProp = Math.random();
+                    d.id = i;
+                    return d;
+                });
+                return data;
+            }, this);
 
             this.setState({data: data});
         }.bind(this));
@@ -111,11 +140,24 @@ const Filters = React.createClass({
             this.props.returnData(null);
         }else{
             if (this.state.data) {
-                let data = _.cloneDeep(this.state.data);
-                data.Responses = data.Responses.filter(this.state.filter
-                                                     || function () { return true; });
+                let N_all = 0,
+                    data = _.cloneDeep(this.state.data)
+                            .map(function (data) {
+                                N_all += data.Responses.length;
+                                data.Responses = data.Responses.filter(
+                                    this.state.filter
+                                 || function () { return true; }
+                                );
 
-                this.props.returnData(data, this.state.data.Responses.length);
+                                return data;
+                            }, this),
+                    caption = _.find(
+                        this.state.jobs,
+                        function (d) { return d.value == this.state.selectedJob},
+                        this
+                    ).label;
+
+                this.props.returnData(data, N_all, caption);
             }
         }
     },
@@ -123,6 +165,7 @@ const Filters = React.createClass({
     render: function () {
         let status = null,
             BA_dropdown = null,
+            types_dropdown = null,
             jobs_dropdown = null,
             help = null,
             subfilters = null;
@@ -147,11 +190,21 @@ const Filters = React.createClass({
             );
         }
 
+        if (this.state.selectedBA) {
+            types_dropdown = (
+                <Dropdown options={this.state.types}
+                          onChange={this.changeType}
+                          label="Chart type"
+                          name="type"
+                          selected={this.state.selectedType} />
+            );
+        }
+
         if (this.state.jobs) {
             jobs_dropdown = (
                 <Dropdown options={this.state.jobs}
                           onChange={this.changeJob}
-                          label="Job"
+                          label={capitalizeFirstLetter(this.state.selectedType)}
                           name="job"
                           selected={this.state.selectedJob} />
             );
@@ -165,9 +218,15 @@ const Filters = React.createClass({
         }
 
         if (!this.state.selectedBA || !this.state.selectedJob) {
-            help = (
-                <h2>Pick a business account and a job to see candidates</h2>
-            );
+            if (!this.state.selectedType) {
+                help = (
+                    <h2>Pick a business account and a chart type to see candidates</h2>
+                );
+            }else{
+                help = (
+                    <h2>Pick a business account and a {this.state.selectedType} to see candidates</h2>
+                );
+            }
         }
 
         return (
@@ -176,6 +235,7 @@ const Filters = React.createClass({
                 {status}
                 <form className="form-inline">
                     {BA_dropdown}
+                    {types_dropdown}
                     {jobs_dropdown}
                     {subfilters}
                 </form>

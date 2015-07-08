@@ -3,12 +3,12 @@ const React = require('react');
 
 const BucketCounts = React.createClass({
     render: function () {
-        var Npassed = this.props.data.Responses.filter(
+        var Npassed = this.props.data.filter(
             function (d) {
                 return this.props.y_value(d) > this.props.passValue;
             }.bind(this)).length,
 
-            Nfail = this.props.data.Responses.length - Npassed;
+            Nfail = this.props.data.length - Npassed;
 
         var lineY = this.props.lineY;
 
