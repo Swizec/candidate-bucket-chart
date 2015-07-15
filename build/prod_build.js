@@ -56,7 +56,12 @@
 	var React = __webpack_require__(2),
 	    ApplicantsChart = __webpack_require__(3);
 
-	React.render(React.createElement(ApplicantsChart, { urlRoot: 'rest/' }), document.querySelectorAll('.container')[0]);
+	function RenderApplicantsChart(urlRoot, selector) {
+	    React.render(React.createElement(ApplicantsChart, { urlRoot: urlRoot }), document.querySelectorAll(selector)[0]);
+	}
+
+	module.exports = RenderApplicantsChart;
+	window.RenderApplicantsChart = RenderApplicantsChart;
 
 /***/ },
 /* 2 */

@@ -2,7 +2,12 @@
 const React = require('react'),
       ApplicantsChart = require('./ApplicantsChart');
 
-React.render(
-    <ApplicantsChart urlRoot="rest/" />,
-    document.querySelectorAll('.container')[0]
-);
+function RenderApplicantsChart(urlRoot, selector) {
+    React.render(
+        <ApplicantsChart urlRoot={urlRoot} />,
+        document.querySelectorAll(selector)[0]
+    );
+}
+
+module.exports = RenderApplicantsChart;
+window.RenderApplicantsChart = RenderApplicantsChart;
