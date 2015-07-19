@@ -14,8 +14,10 @@ the code assumes both React and d3.js are loaded as externals.
 You should either add them to your build process or include them in
 your page like this:
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react-with-addons.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+```html
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react-with-addons.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+```
 
 This shouldn't affect any of your other JavaScript files or libraries.
 
@@ -31,9 +33,11 @@ You can integrate this chart in one of two ways:
 If your JavaScript environment supports requiring files, you can load
 the entire chart through the production build JavaScript file.
 
-    const RenderApplicantsChart = require('path/to/lib/build/prod_build.js');
+```javascript
+const RenderApplicantsChart = require('path/to/lib/build/prod_build.js');
 
-    RenderApplicantsChart( ... );
+RenderApplicantsChart( ... );
+```
 
 ### Using a global function
 
@@ -41,33 +45,39 @@ To accomodate environments without the ability to require, this
 library also exports a global function attached to the `window`
 scope. You call it the same as above:
 
-    RenderApplicantsChart( ... );
+```javascript
+RenderApplicantsChart( ... );
+```
 
 But you will have to manually add a `<script>` tag to load the
 code. Add this line next to your other script tags:
 
-    <script src="<path/to/lib/build/prod_build.js"></script>
+```html
+<script src="<path/to/lib/build/prod_build.js"></script>
+```
 
 ## The parameters
 
 There are some basic parameters you can set when calling the chart
 function. You should send them as a params object.
 
-    RenderApplicantsChart({
-        selector: '.container', // required, tells chart where to render into
-        urlRoot: 'rest/', // required, defines the root URL of the
-        data REST API
-        width: 800, // optional, specifies the chart's width
-        height: 500, // optional, specifies the chart's height
-        // Note: height doesn't account for the height of filters,
-        title, or meta text. It's just for the graphic part
-        max_r: 10, // optional, maximum size factor for datapoints; is
-        not a direct pixel value, but does have linear correlation to
-        the max
-        default_pass_line: 'median' // optional, the pass line's
-        default value; can be set as a number or a function name to be
-        calculated for each dataset - median or mean
-    });
+```javascript
+RenderApplicantsChart({
+    selector: '.container', // required, tells chart where to render into
+    urlRoot: 'rest/', // required, defines the root URL of the
+    data REST API
+    width: 800, // optional, specifies the chart's width
+    height: 500, // optional, specifies the chart's height
+    // Note: height doesn't account for the height of filters,
+    // title, or meta text. It's just for the graphic part
+    max_r: 10, // optional, maximum size factor for datapoints; is
+    // not a direct pixel value, but does have linear correlation to
+    // the max
+    default_pass_line: 'median' // optional, the pass line's
+    // default value; can be set as a number or a function name to be
+    // calculated for each dataset - median or mean
+});
+```
 
 ## The styling
 
@@ -78,7 +88,9 @@ assumed to make the stars score in each applicant's tooltip.
 
 You should include the CSS in your page like this:
 
-    <link rel="stylesheet" href="path/to/lib/build/style.css">
+```html
+<link rel="stylesheet" href="path/to/lib/build/style.css">
+```
 
 # How to modify
 
