@@ -56,8 +56,8 @@
 	var React = __webpack_require__(2),
 	    ApplicantsChart = __webpack_require__(3);
 
-	function RenderApplicantsChart(urlRoot, selector) {
-	    React.render(React.createElement(ApplicantsChart, { urlRoot: urlRoot }), document.querySelectorAll(selector)[0]);
+	function RenderApplicantsChart(options) {
+	    React.render(React.createElement(ApplicantsChart, options), document.querySelectorAll(options.selector)[0]);
 	}
 
 	module.exports = RenderApplicantsChart;
@@ -97,7 +97,8 @@
 	        return {
 	            width: 800,
 	            height: 500,
-	            max_r: 10
+	            max_r: 10,
+	            default_pass_line: 'median'
 	        };
 	    },
 
@@ -265,27 +266,56 @@
 	        };
 	    },
 
-	    getInitialState: function getInitialState() {
-	        var median = d3.median(this.props.data.map(this.props.y_value)),
-	            N_above = this.props.data.filter((function (d) {
-	            return this.props.y_value(d) > median;
-	        }).bind(this)).length,
-	            N_below = this.props.data.filter((function (d) {
-	            return this.props.y_value(d) < median;
-	        }).bind(this)).length;
+	    __get_default_pass_value: function __get_default_pass_value() {
+	        var val = this.props.default_pass_value;
 
-	        this.props.updatePassValue(median, N_above, N_below);
+	        if (_.isNumber(val)) {
+	            return val;
+	        } else if (val === 'median') {
+	            return d3.median(this.props.data.map(this.props.y_value));
+	        } else if (val === 'mean') {
+	            return d3.mean(this.props.data.map(this.props.y_value));
+	        } else {
+	            return 50;
+	        }
+	    },
+
+	    getInitialState: function getInitialState() {
+	        var passValue = this.__get_default_pass_value();
+
+	        this.__updatePass(passValue);
 
 	        return {
-	            passValue: median
+	            passValue: passValue
 	        };
+	    },
+
+	    updatePass: function updatePass(y) {
+	        var value = d3.round(this.yScale.invert(y));
+
+	        this.setState({ passValue: value });
+	        this.__updatePass(value);
+	    },
+
+	    __updatePass: function __updatePass(passValue, props) {
+	        props || (props = this.props);
+
+	        var N_above = props.data.filter((function (d) {
+	            return props.y_value(d) > passValue;
+	        }).bind(this)).length,
+	            N_below = props.data.filter((function (d) {
+	            return props.y_value(d) < passValue;
+	        }).bind(this)).length;
+
+	        props.updatePassValue(passValue, N_above, N_below);
 	    },
 
 	    componentWillMount: function componentWillMount() {
 	        this.yScale = d3.scale.linear();
 	        this.xScale = d3.scale.linear();
 	        this.rScale = d3.scale.linear();
-	        this.zoomScaleMultiplier = d3.scale.log().domain([1, 8]).range([1, 3]);
+	        this.zoomScaleMultiplier = d3.scale.log().domain([1, 7]).range([1, 3]);
+
 	        this.zoom = d3.behavior.zoom().x(this.xScale).y(this.yScale).scaleExtent(this.zoomScaleMultiplier.domain()).on('zoom', this.onZoom);
 
 	        this.update_d3(this.props);
@@ -293,6 +323,7 @@
 
 	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
 	        this.update_d3(newProps);
+	        this.__updatePass(this.state.passValue, newProps);
 	    },
 
 	    update_d3: function update_d3(props) {
@@ -300,7 +331,9 @@
 
 	        this.rScale.domain([d3.min(props.data.map(props.r_value)), d3.max(props.data.map(props.r_value))]).range([1, this.props.max_r]);
 
-	        this.xScale.domain([d3.min(props.data.map(props.x_value)), d3.max(props.data.map(props.x_value))]).range([props.margin.left + props.max_r, props.width - props.margin.right - props.max_r]);
+	        this.xScale.domain([d3.min(props.data.map(props.x_value)), d3.max(props.data.map(props.x_value))]).range([props.margin.left,
+	        // 19 is magic number for max icon width at default zoom
+	        props.width - props.margin.right - 19]);
 
 	        this.panExtent = { x: this.xScale.domain(),
 	            y: this.yScale.domain() };
@@ -332,7 +365,8 @@
 	            width = this.props.width;
 
 	        // taken from http://bl.ocks.org/garrilla/11280861
-	        var divisor = { h: height / ((y.domain()[1] - y.domain()[0]) * zoom.scale()), w: width / ((x.domain()[1] - x.domain()[0]) * zoom.scale()) },
+	        var divisor = { h: height / ((y.domain()[1] - y.domain()[0]) * zoom.scale()),
+	            w: width / ((x.domain()[1] - x.domain()[0]) * zoom.scale()) },
 	            minX = -((x.domain()[0] - x.domain()[1]) * zoom.scale() + (panExtent.x[1] - (panExtent.x[1] - width / divisor.w))),
 	            minY = -((y.domain()[0] - y.domain()[1]) * zoom.scale() + (panExtent.y[1] - (panExtent.y[1] - height * zoom.scale() / divisor.h))) * divisor.h,
 	            maxX = -(x.domain()[0] - x.domain()[1] + (panExtent.x[1] - panExtent.x[0])) * divisor.w * zoom.scale(),
@@ -341,19 +375,6 @@
 	            ty = y.domain()[0] < panExtent.y[0] ? minY : y.domain()[1] > panExtent.y[1] ? maxY : zoom.translate()[1];
 
 	        this.zoom.translate([tx, ty]);
-	    },
-
-	    updatePass: function updatePass(y) {
-	        var value = d3.round(this.yScale.invert(y)),
-	            N_above = this.props.data.filter((function (d) {
-	            return this.props.y_value(d) > value;
-	        }).bind(this)).length,
-	            N_below = this.props.data.filter((function (d) {
-	            return this.props.y_value(d) < value;
-	        }).bind(this)).length;
-
-	        this.setState({ passValue: value });
-	        this.props.updatePassValue(value, N_above, N_below);
 	    },
 
 	    hide_tooltips: function hide_tooltips(event) {
@@ -372,16 +393,16 @@
 	        tooltip.toggle();
 	    },
 
-	    __build_candidates: function __build_candidates(median) {
+	    __build_candidates: function __build_candidates(default_pass) {
 	        return React.createElement(
 	            'g',
 	            null,
 	            this.props.data.map(function (d) {
-	                var passed = this.props.y_value(d) > (this.state.passValue || median);
+	                var passed = this.props.y_value(d) > (this.state.passValue || default_pass);
 
 	                return React.createElement(Candidate, { x: this.xScale(this.props.x_value(d)),
 	                    y: this.yScale(this.props.y_value(d)),
-	                    r: this.rScale(this.props.r_value(d)),
+	                    r: this.rScale(this.props.r_value(d)) + 3,
 	                    max_r: this.props.max_r,
 	                    key: 'candidate-' + d.id,
 	                    data: d,
@@ -417,7 +438,7 @@
 	    },
 
 	    render: function render() {
-	        var median = d3.median(this.props.data.map(this.props.y_value)),
+	        var default_pass = this.__get_default_pass_value(),
 	            passValue = this.state.passValue,
 	            lineY = this.yScale(passValue),
 	            metaTools = null;
@@ -443,7 +464,7 @@
 	            );
 	        }
 
-	        var candidates = this.__build_candidates(median),
+	        var candidates = this.__build_candidates(default_pass),
 	            tooltips = this.__build_tooltips();
 
 	        return React.createElement(
@@ -456,12 +477,12 @@
 	            React.createElement('line', { className: 'line',
 	                x1: this.props.margin.left,
 	                y1: this.props.height - this.props.margin.bottom,
-	                x2: this.props.width - this.props.margin.right + 10,
+	                x2: this.props.width - this.props.margin.right + 8,
 	                y2: this.props.height - this.props.margin.bottom }),
 	            React.createElement('line', { className: 'line',
-	                x1: this.props.width - this.props.margin.right + 10,
+	                x1: this.props.width - this.props.margin.right + 8,
 	                y1: this.props.margin.top,
-	                x2: this.props.width - this.props.margin.right + 10,
+	                x2: this.props.width - this.props.margin.right + 8,
 	                y2: this.props.height - this.props.margin.bottom }),
 	            metaTools,
 	            tooltips
@@ -12907,7 +12928,7 @@
 
 	    getInitialState: function getInitialState() {
 	        return { width: 12,
-	            height: 12,
+	            height: 19,
 	            y_offset: 0,
 	            x_offset: 0 };
 	    },
@@ -12921,7 +12942,12 @@
 	    },
 
 	    beyondEdge: function beyondEdge() {
-	        return this.props.x > this.props.maxX || this.props.x < this.props.minX || this.props.y > this.props.maxY || this.props.y < this.props.minY;
+	        return this.props.x + this.state.width / 2 > this.props.maxX || this.props.x - this.state.width / 2 < this.props.minX || this.props.y + this.state.height / 2 > this.props.maxY || this.props.y - this.state.height / 2 < this.props.minY;
+	    },
+
+	    getDimensions: function getDimensions(width, height) {
+	        this.setState({ width: width,
+	            height: height });
 	    },
 
 	    render: function render() {
@@ -12940,10 +12966,11 @@
 	                onClick: this.toggle_tooltip,
 	                className: className,
 	                id: 'candidate-' + this.props.data.id },
-	            React.createElement(Icon, { cx: this.props.r / 2 - this.state.x_offset,
-	                cy: this.props.r / 2 - this.state.y_offset,
+	            React.createElement(Icon, { cx: this.state.x_offset,
+	                cy: this.state.y_offset,
 	                r: this.props.r / this.props.max_r,
-	                gender: gender
+	                gender: gender,
+	                tellDimensions: this.getDimensions
 	            })
 	        );
 	    }
@@ -12968,7 +12995,7 @@
 	    sizes: {
 	        male: [12, 32],
 	        female: [19, 32],
-	        none: [2.5, 2.5]
+	        none: [12, 32]
 	    },
 
 	    man_icon: function man_icon() {
@@ -12993,9 +13020,21 @@
 	        return this.man_icon();
 	    },
 
+	    componentWillMount: function componentWillMount() {
+	        this.__tellDimensions(this.props);
+	    },
+
+	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	        this.__tellDimensions(nextProps);
+	    },
+
+	    __tellDimensions: function __tellDimensions(props) {
+	        props.tellDimensions(this.sizes[props.gender][0] * props.r, this.sizes[props.gender][1] * props.r);
+	    },
+
 	    render: function render() {
 	        var size = this.sizes[this.props.gender],
-	            transform = 'translate(' + (this.props.cx - size[0] / 2) + ', ' + (this.props.cy - size[1] / 2) + ') scale(' + this.props.r + ')';
+	            transform = 'scale(' + this.props.r + ') translate(' + (this.props.cx - size[0] * this.props.r / 2) + ', ' + (this.props.cy - size[1] * this.props.r / 2) + ')';
 
 	        var icons = {
 	            male: this.man_icon,
