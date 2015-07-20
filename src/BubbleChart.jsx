@@ -48,22 +48,35 @@ var BubbleChart = React.createClass({
     },
 
     getInitialState: function () {
-        let passValue = this.__get_default_pass_value(),
-            N_above = this.props.data.filter(
-                function (d) {
-                    return this.props.y_value(d) > passValue;
-                }.bind(this)).length,
-            N_below = this.props.data.filter(
-                function (d) {
-                    return this.props.y_value(d) < passValue;
-                }.bind(this)).length;
+        let passValue = this.__get_default_pass_value();
 
-        this.props.updatePassValue(passValue, N_above, N_below);
-
+        this.__updatePass(passValue);
 
         return {
             passValue: passValue
         };
+    },
+
+    updatePass: function (y) {
+        var value = d3.round(this.yScale.invert(y));
+
+        this.setState({passValue: value});
+        this.__updatePass(value);
+    },
+
+    __updatePass: function (passValue, props) {
+        props || (props = this.props);
+
+        let N_above = props.data.filter(
+            function (d) {
+                return props.y_value(d) > passValue;
+            }.bind(this)).length,
+            N_below = props.data.filter(
+                function (d) {
+                    return props.y_value(d) < passValue;
+                }.bind(this)).length;
+
+        props.updatePassValue(passValue, N_above, N_below);
     },
 
     componentWillMount: function () {
@@ -85,6 +98,7 @@ var BubbleChart = React.createClass({
 
     componentWillReceiveProps: function (newProps) {
         this.update_d3(newProps);
+        this.__updatePass(this.state.passValue, newProps);
     },
 
     update_d3: function (props) {
@@ -173,22 +187,6 @@ var BubbleChart = React.createClass({
 		 zoom.translate()[1];
 
 	this.zoom.translate([tx,ty]);
-    },
-
-    updatePass: function (y) {
-        var value = d3.round(this.yScale.invert(y)),
-            N_above = this.props.data.filter(
-                function (d) {
-                    return this.props.y_value(d) > value;
-                }.bind(this)).length,
-            N_below = this.props.data.filter(
-                function (d) {
-                    return this.props.y_value(d) < value;
-                }.bind(this)).length;
-
-
-        this.setState({passValue: value});
-        this.props.updatePassValue(value, N_above, N_below);
     },
 
     hide_tooltips: function (event) {
