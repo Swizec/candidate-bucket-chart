@@ -71,7 +71,7 @@ var BubbleChart = React.createClass({
         this.xScale = d3.scale.linear();
         this.rScale = d3.scale.linear();
         this.zoomScaleMultiplier = d3.scale.log()
-                                     .domain([1, 8])
+                                     .domain([1, 7])
                                      .range([1, 3]);
         this.zoom = d3.behavior.zoom()
                       .x(this.xScale)
@@ -152,7 +152,8 @@ var BubbleChart = React.createClass({
             width = this.props.width;
 
         // taken from http://bl.ocks.org/garrilla/11280861
-        var divisor = {h: height / ((y.domain()[1]-y.domain()[0])*zoom.scale()), w: width / ((x.domain()[1]-x.domain()[0])*zoom.scale())},
+        var divisor = {h: height / ((y.domain()[1]-y.domain()[0])*zoom.scale()),
+                       w: width / ((x.domain()[1]-x.domain()[0])*zoom.scale())},
 	    minX = -(((x.domain()[0]-x.domain()[1])*zoom.scale())+(panExtent.x[1]-(panExtent.x[1]-(width/divisor.w)))),
 	    minY = -(((y.domain()[0]-y.domain()[1])*zoom.scale())+(panExtent.y[1]-(panExtent.y[1]-(height*(zoom.scale())/divisor.h))))*divisor.h,
 	    maxX = -(((x.domain()[0]-x.domain()[1]))+(panExtent.x[1]-panExtent.x[0]))*divisor.w*zoom.scale(),
@@ -168,6 +169,9 @@ var BubbleChart = React.createClass({
 		 y.domain()[1] > panExtent.y[1] ?
 		 maxY :
 		 zoom.translate()[1];
+
+        console.log(minX, minY, '--', maxX, maxY);
+        console.log(tx, ty);
 
 	this.zoom.translate([tx,ty]);
     },
