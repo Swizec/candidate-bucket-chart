@@ -2,10 +2,10 @@
 const React = require('react'),
       ApplicantsChart = require('./ApplicantsChart');
 
-function RenderApplicantsChart(urlRoot, selector) {
+function RenderApplicantsChart(options) {
     React.render(
-        <ApplicantsChart urlRoot={urlRoot} />,
-        document.querySelectorAll(selector)[0]
+        <ApplicantsChart {... options} />,
+        document.querySelectorAll(options.selector)[0]
     );
 }
 

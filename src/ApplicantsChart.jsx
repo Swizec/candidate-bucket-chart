@@ -17,7 +17,8 @@ const ApplicantsChart = React.createClass({
         return {
             width: 800,
             height: 500,
-            max_r: 10
+            max_r: 10,
+            default_pass_line: 'median'
         };
     },
 

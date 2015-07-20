@@ -15,7 +15,9 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
         <script src="build/bundle.js"></script>
         <script>
-         RenderApplicantsChart("rest/", ".container");
+         RenderApplicantsChart({urlRoot: "rest/",
+                                selector: ".container",
+                                default_pass_value: 'median'});
         </script>
     </body>
 </html>

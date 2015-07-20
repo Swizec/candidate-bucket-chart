@@ -33,22 +33,36 @@ var BubbleChart = React.createClass({
         };
     },
 
+    __get_default_pass_value: function () {
+        let val = this.props.default_pass_value;
+
+        if (_.isNumber(val)) {
+            return val;
+        }else if (val === 'median') {
+            return d3.median(this.props.data.map(this.props.y_value));
+        }else if (val === 'mean') {
+            return d3.mean(this.props.data.map(this.props.y_value));
+        }else{
+            return 50;
+        }
+    },
+
     getInitialState: function () {
-        let median = d3.median(this.props.data.map(this.props.y_value)),
+        let passValue = this.__get_default_pass_value(),
             N_above = this.props.data.filter(
                 function (d) {
-                    return this.props.y_value(d) > median;
+                    return this.props.y_value(d) > passValue;
                 }.bind(this)).length,
             N_below = this.props.data.filter(
                 function (d) {
-                    return this.props.y_value(d) < median;
+                    return this.props.y_value(d) < passValue;
                 }.bind(this)).length;
 
-        this.props.updatePassValue(median, N_above, N_below);
+        this.props.updatePassValue(passValue, N_above, N_below);
 
 
         return {
-            passValue: median
+            passValue: passValue
         };
     },
 

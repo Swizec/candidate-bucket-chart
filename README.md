@@ -68,8 +68,9 @@ RenderApplicantsChart({
     data REST API
     width: 800, // optional, specifies the chart's width
     height: 500, // optional, specifies the chart's height
-    // Note: height doesn't account for the height of filters,
-    // title, or meta text. It's just for the graphic part
+    // Note: width and height only affect the graphic part of the chart
+    // You will have to change the container dimensions to reflow
+    // the title, filters, and meta data
     max_r: 10, // optional, maximum size factor for datapoints; is
     // not a direct pixel value, but does have linear correlation to
     // the max
