@@ -10,7 +10,7 @@ var Icon = React.createClass({
     sizes: {
         male: [12, 32],
         female: [19, 32],
-        none: [2.5, 2.5]
+        none: [12, 32]
     },
 
     man_icon: function () {
@@ -35,9 +35,22 @@ var Icon = React.createClass({
         return this.man_icon();
     },
 
+    componentWillMount: function () {
+        this.__tellDimensions(this.props);
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        this.__tellDimensions(nextProps);
+    },
+
+    __tellDimensions: function (props) {
+        props.tellDimensions(this.sizes[props.gender][0]*props.r,
+                             this.sizes[props.gender][1]*props.r);
+    },
+
     render: function () {
         var size = this.sizes[this.props.gender],
-            transform = "translate("+(this.props.cx-size[0]/2)+", "+(this.props.cy-size[1]/2)+") scale("+this.props.r+")";
+            transform = "scale("+this.props.r+") translate("+(this.props.cx-size[0]*this.props.r/2)+", "+(this.props.cy-size[1]*this.props.r/2)+")";
 
         var icons = {
             male: this.man_icon,

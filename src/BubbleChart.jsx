@@ -73,6 +73,7 @@ var BubbleChart = React.createClass({
         this.zoomScaleMultiplier = d3.scale.log()
                                      .domain([1, 7])
                                      .range([1, 3]);
+
         this.zoom = d3.behavior.zoom()
                       .x(this.xScale)
                       .y(this.yScale)
@@ -113,8 +114,9 @@ var BubbleChart = React.createClass({
                 d3.max(props.data.map(props.x_value))
             ])
             .range([
-                props.margin.left+props.max_r,
-                props.width-props.margin.right-props.max_r
+                props.margin.left,
+                // 19 is magic number for max icon width at default zoom
+                props.width-props.margin.right-19
             ]);
 
         this.panExtent = {x: this.xScale.domain(),
@@ -170,9 +172,6 @@ var BubbleChart = React.createClass({
 		 maxY :
 		 zoom.translate()[1];
 
-        console.log(minX, minY, '--', maxX, maxY);
-        console.log(tx, ty);
-
 	this.zoom.translate([tx,ty]);
     },
 
@@ -209,10 +208,10 @@ var BubbleChart = React.createClass({
         tooltip.toggle();
     },
 
-    __build_candidates: function (median) {
+    __build_candidates: function (default_pass) {
         return (<g>
             {this.props.data.map(function (d) {
-                var passed = this.props.y_value(d) > (this.state.passValue || median);
+                var passed = this.props.y_value(d) > (this.state.passValue || default_pass);
 
                 return (
                     <Candidate x={this.xScale(this.props.x_value(d))}
@@ -255,7 +254,7 @@ var BubbleChart = React.createClass({
     },
 
     render: function () {
-        let median = d3.median(this.props.data.map(this.props.y_value)),
+        let default_pass = this.__get_default_pass_value(),
             passValue = this.state.passValue,
             lineY = this.yScale(passValue),
             metaTools = null;
@@ -282,7 +281,7 @@ var BubbleChart = React.createClass({
             );
         }
 
-        let candidates = this.__build_candidates(median),
+        let candidates = this.__build_candidates(default_pass),
             tooltips = this.__build_tooltips();
 
         return (
@@ -295,12 +294,12 @@ var BubbleChart = React.createClass({
                 <line className="line"
                       x1={this.props.margin.left}
                       y1={this.props.height-this.props.margin.bottom}
-                      x2={this.props.width-this.props.margin.right+10}
+                      x2={this.props.width-this.props.margin.right+8}
                       y2={this.props.height-this.props.margin.bottom} />
                 <line className="line"
-                      x1={this.props.width-this.props.margin.right+10}
+                      x1={this.props.width-this.props.margin.right+8}
                       y1={this.props.margin.top}
-                      x2={this.props.width-this.props.margin.right+10}
+                      x2={this.props.width-this.props.margin.right+8}
                       y2={this.props.height-this.props.margin.bottom} />
 
                 {metaTools}
