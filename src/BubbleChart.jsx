@@ -69,11 +69,11 @@ var BubbleChart = React.createClass({
 
         let N_above = props.data.filter(
             function (d) {
-                return props.y_value(d) > passValue;
+                return props.y_value(d) >= passValue;
             }.bind(this)).length,
             N_below = props.data.filter(
                 function (d) {
-                    return props.y_value(d) <= passValue;
+                    return props.y_value(d) < passValue;
                 }.bind(this)).length;
 
         props.updatePassValue(passValue, N_above, N_below);
