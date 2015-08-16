@@ -114,8 +114,8 @@ var BubbleChart = React.createClass({
 
         this.rScale
             .domain([
-                d3.min(props.data.map(props.r_value)),
-                d3.max(props.data.map(props.r_value))
+                0,
+                100
             ])
             .range([
                 1,
