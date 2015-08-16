@@ -20,6 +20,7 @@
     "jit-grunt": "^0.9.1",
     "jsonfile": "^2.0.1",
     "lodash": "^3.9.3",
+    "mkdirp": "^0.5.1",
     "node-libs-browser": "^0.5.2",
     "react": "^0.13.3",
     "react-addons": "^0.9.1-deprecated",
