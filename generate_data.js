@@ -74,7 +74,7 @@ const generate_report = function (nid) {
                   JobTitle: job.title || [Faker.hacker.adjective(),
                                           Faker.hacker.noun(),
                                           Faker.hacker.ingverb()].join(' '),
-                  Responses: _.zipObject(_.range(10).map(make_response))};
+                  Responses: _.zipObject(_.range(50).map(make_response))};
       },
       make_response = function () {
           return [Faker.helpers.randomNumber(10000),

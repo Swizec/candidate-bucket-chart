@@ -301,10 +301,10 @@
 	        props || (props = this.props);
 
 	        var N_above = props.data.filter((function (d) {
-	            return props.y_value(d) > passValue;
+	            return props.y_value(d) >= passValue;
 	        }).bind(this)).length,
 	            N_below = props.data.filter((function (d) {
-	            return props.y_value(d) <= passValue;
+	            return props.y_value(d) < passValue;
 	        }).bind(this)).length;
 
 	        props.updatePassValue(passValue, N_above, N_below);
@@ -329,7 +329,7 @@
 	    update_d3: function update_d3(props) {
 	        this.yScale.domain([0, 100]).range([props.height - props.margin.bottom, props.margin.top]);
 
-	        this.rScale.domain([d3.min(props.data.map(props.r_value)), d3.max(props.data.map(props.r_value))]).range([1, this.props.max_r]);
+	        this.rScale.domain([0, 100]).range([1, this.props.max_r]);
 
 	        this.xScale.domain([d3.min(props.data.map(props.x_value)), d3.max(props.data.map(props.x_value))]).range([props.margin.left,
 	        // 19 is magic number for max icon width at default zoom
@@ -13173,7 +13173,7 @@
 
 	    render: function render() {
 	        var Npassed = this.props.data.filter((function (d) {
-	            return this.props.y_value(d) > this.props.passValue;
+	            return this.props.y_value(d) >= this.props.passValue;
 	        }).bind(this)).length,
 	            Nfail = this.props.data.length - Npassed;
 
@@ -13402,13 +13402,13 @@
 	            type = this.state.selectedType;
 
 	        this.__fetch(['reports', account_id, type, job_id].join('/'), (function (data) {
-	            data = data.map(function (data) {
+	            data = data.map(function (data, j) {
 	                if (!_.isArray(data.Responses)) {
 	                    data.Responses = _.values(data.Responses);
 	                }
 	                data.Responses = data.Responses.map(function (d, i) {
 	                    d.randomProp = Math.random();
-	                    d.id = i;
+	                    d.id = i + '-' + j;
 	                    return d;
 	                });
 	                return data;

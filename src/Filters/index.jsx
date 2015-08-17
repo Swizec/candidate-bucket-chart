@@ -128,13 +128,13 @@ const Filters = React.createClass({
             type = this.state.selectedType;
 
         this.__fetch(["reports", account_id, type, job_id].join("/"), function (data) {
-            data = data.map(function (data) {
+            data = data.map(function (data, j) {
                 if (!_.isArray(data.Responses)) {
                     data.Responses = _.values(data.Responses);
                 }
                 data.Responses = data.Responses.map(function (d, i) {
                     d.randomProp = Math.random();
-                    d.id = i;
+                    d.id = i+'-'+j;
                     return d;
                 });
                 return data;
