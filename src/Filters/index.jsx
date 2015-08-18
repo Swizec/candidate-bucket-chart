@@ -144,7 +144,6 @@ const Filters = React.createClass({
                 return mem.concat(d.Responses);
             }, []);
 
-
             this.setState({data: data,
                            flatData: flatData});
         }.bind(this));

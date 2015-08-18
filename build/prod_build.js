@@ -331,7 +331,7 @@
 
 	        this.rScale.domain([0, 100]).range([1, this.props.max_r]);
 
-	        this.xScale.domain([d3.min(props.data.map(props.x_value)), d3.max(props.data.map(props.x_value))]).range([props.margin.left,
+	        this.xScale.domain([0, 1]).range([props.margin.left,
 	        // 19 is magic number for max icon width at default zoom
 	        props.width - props.margin.right - 19]);
 
